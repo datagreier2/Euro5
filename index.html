@@ -142,6 +142,7 @@
       return best;
     }
     function parseCSV(text) {
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
       const delim = detectDelimiter(text); // ',', ';', or '	'
       const rows = []; let i=0, field='', row=[], inQuotes=false;
       while (i < text.length) {
@@ -314,7 +315,7 @@
     $sort.addEventListener('change', () => render(allItems));
 
     // boot
-    let LANG = detectLang(); setLang(LANG); applyI18n(); loadData();
+    LANG = detectLang(); setLang(LANG); applyI18n(); loadData();
   </script>
 </body>
 </html>
