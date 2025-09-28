@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nyheter · CSV–visning</title>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root { --bg:#0b0c0f; --fg:#e7e9ee; --muted:#9aa3b2; --card:#12141a; --accent:#3b82f6; --border:#1e2230; --radius:16px; --shadow:0 6px 20px rgba(0,0,0,.25) }
+    @media (prefers-color-scheme: light) { :root { --bg:#f7f8fb; --fg:#0c0d10; --muted:#5b6575; --card:#fff; --accent:#1f6feb; --border:#e6e8ee; --shadow:0 6px 20px rgba(0,0,0,.08) } }
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:radial-gradient(1200px 600px at 10% -10%,rgba(59,130,246,.07),transparent 60%) var(--bg);color:var(--fg)}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{display:grid;gap:12px;margin:12px 0 8px}
+    h1{margin:0;font-size:clamp(1.25rem,1rem + 1.5vw,2rem)}
+    .toolbar{display:grid;gap:8px;grid-template-columns:1fr minmax(130px,180px) minmax(120px,180px) 44px}
+    .toolbar input,.toolbar select,.toolbar button{appearance:none;border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--card);color:var(--fg);box-shadow:var(--shadow);outline:none}
+    .toolbar input:focus,.toolbar select:focus,.toolbar button:focus{border-color:var(--accent)}
+    .toolbar button{cursor:pointer;display:inline-grid;place-items:center}
+    .meta{color:var(--muted);font-size:.9rem;display:flex;gap:16px;flex-wrap:wrap}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:12px}
+    article{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:grid;gap:8px;box-shadow:var(--shadow);position:relative}
+    article h2{margin:0;font-size:1.02rem;line-height:1.25;font-weight:650}
+    article p{margin:0;color:var(--muted)}
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+    .row a{color:var(--accent);font-weight:600;text-decoration:none}
+    .row a:hover{text-decoration:underline}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    .empty{border:1px dashed var(--border);border-radius:16px;padding:32px;text-align:center;color:var(--muted);margin-top:16px}
+    footer{color:var(--muted);font-size:.9rem;text-align:center;padding:28px 0 10px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1 id="site-title">Nyheter</h1>
+      <p id="intro"></p>
+
+      <div class="toolbar" role="search">
+        <label class="sr-only" for="q">Søk</label>
+        <input id="q" type="search" placeholder="Søk i titler og sammendrag…" autocomplete="off" />
+        <select id="sort">
+          <option value="relevance">Sortering: relevans</option>
+          <option value="title-asc">Tittel A–Å</option>
+          <option value="title-desc">Tittel Å–A</option>
+          <option value="source-asc">Kilde A–Å</option>
+          <option value="source-desc">Kilde Å–A</option>
+        </select>
+        <select id="lang-picker" aria-label="Språk"></select>
+        <button id="clear" title="Nullstill søk" aria-label="Nullstill søk">⟲</button>
+      </div>
+
+      <div class="meta">
+        <span id="count">0 saker</span>
+        <span id="updated">Oppdatert: —</span>
+        <span id="source">Kilde: <code id="csv-name"></code></span>
+      </div>
+    </header>
+
+    <main id="grid" class="grid" aria-live="polite"></main>
+    <div id="empty" class="empty" hidden>Ingen treff. Prøv et annet søk.</div>
+
+    <footer>
+      Statisk front – dynamisk data fra CSV. Ingen rammeverk. ✨
+    </footer>
+  </div>
+
+  <script>
+    // ------------------------------------------------------------
+    // ✦ HOW TO EDIT STATIC TEXT & LANGUAGES
+    //   1) Update the TRANSLATIONS object below.
+    //   2) For nb (Norwegian), data comes from CSV at CONFIG.data.nb.path.
+    //   3) For da and sv (Danish/Swedish), supply static items now and later
+    //      switch to CSV by setting data.type = 'csv' and data.path.
+    //   4) Language detection: ?lang=xx → localStorage → browser; fallback nb.
+    // ------------------------------------------------------------
+
+    const CONFIG = {
+      locales: ['nb','da','sv'],
+      defaultLocale: 'nb',
+      data: {
+        nb: { type: 'csv', path: './data/final_output.csv', name: 'final_output.csv' },
+        da: { type: 'static', items: [
+          // Example static entries – replace freely
+          { title: 'Velkommen (DA)', summary: 'Her kommer danske nyheder. Denne side bruger statisk indhold indtil CSV er klar.', link: '#' }
+        ] },
+        sv: { type: 'static', items: [
+          { title: 'Välkommen (SV)', summary: 'Här visas svenska nyheter. Den här sidan använder statiskt innehåll tills CSV är klart.', link: '#' }
+        ] }
+      }
+    };
+
+    const TRANSLATIONS = {
+      nb: {
+        siteTitle: 'Nyheter',
+        intro: 'Automatisk visning av nyheter fra CSV. Søk, sorter og klikk for å lese mer.',
+        placeholders: { search: 'Søk i titler og sammendrag…' },
+        labels: { sortRelevance: 'Sortering: relevans', sortTA: 'Tittel A–Å', sortAT: 'Tittel Å–A', sortSourceA: 'Kilde A–Å', sortSourceZ: 'Kilde Å–A', count: items => `${items} saker`, updated: ts => `Oppdatert: ${ts}`, source: 'Kilde' },
+        empty: 'Ingen treff. Prøv et annet søk.'
+      },
+      da: {
+        siteTitle: 'Nyheder',
+        intro: 'Statisk visning for DK (kan skiftes til CSV senere).',
+        placeholders: { search: 'Søg i titler og resuméer…' },
+        labels: { sortRelevance: 'Sortering: relevans', sortTA: 'Titel A–Å', sortAT: 'Titel Å–A', sortSourceA: 'Kilde A–Å', sortSourceZ: 'Kilde Å–A', count: items => `${items} artikler`, updated: ts => `Opdateret: ${ts}`, source: 'Kilde' },
+        empty: 'Ingen resultater. Prøv en anden søgning.'
+      },
+      sv: {
+        siteTitle: 'Nyheter',
+        intro: 'Statisk vy för SE (kan bytas till CSV senare).',
+        placeholders: { search: 'Sök i rubriker och sammanfattningar…' },
+        labels: { sortRelevance: 'Sortering: relevans', sortTA: 'Titel A–Ö', sortAT: 'Titel Ö–A', sortSourceA: 'Källa A–Ö', sortSourceZ: 'Källa Ö–A', count: items => `${items} artiklar`, updated: ts => `Uppdaterad: ${ts}`, source: 'Källa' },
+        empty: 'Inga träffar. Prova en annan sökning.'
+      }
+    };
+
+    // ---- Language detection -------------------------------------------------
+    function getParamLang() { return new URL(location.href).searchParams.get('lang'); }
+    function normalizeLang(tag) { return (tag || '').toLowerCase().slice(0,2); }
+    function detectLang() {
+      const urlLang = normalizeLang(getParamLang());
+      const storedLang = normalizeLang(localStorage.getItem('lang'));
+      const navLang = normalizeLang(navigator.language || (navigator.languages||[])[0] || '');
+      const pick = (l) => CONFIG.locales.includes(l) ? l : null;
+      return pick(urlLang) || pick(storedLang) || pick(navLang) || CONFIG.defaultLocale;
+    }
+    function setLang(lang) {
+      const sp = new URL(location.href).searchParams; sp.set('lang', lang);
+      history.replaceState(null, '', `${location.pathname}?${sp.toString()}`);
+      localStorage.setItem('lang', lang);
+      document.documentElement.lang = lang;
+    }
+
+    // ---- CSV parsing --------------------------------------------------------
+    function parseCSV(text) {
+      const rows = []; let i=0, field='', row=[], inQuotes=false;
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') { const n = text[i+1]; if (n === '"'){ field += '"'; i++; } else { inQuotes=false; } }
+          else field += c;
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ',') { row.push(field.trim()); field=''; }
+          else if (c === '\n' || c==='\r') { if (c==='\r' && text[i+1]==='\n') i++; row.push(field.trim()); field=''; if (row.some(x=>x!=='')) rows.push(row); row=[]; }
+          else field += c;
+        }
+        i++;
+      }
+      if (field.length || row.length) { row.push(field.trim()); rows.push(row); }
+      if (!rows.length) return { headers:[], records:[] };
+      const headers = rows[0].map(h=>h.trim());
+      const records = rows.slice(1).map(r=>{ const o={}; headers.forEach((h,idx)=>o[h]=r[idx]??''); return o; });
+      return { headers, records };
+    }
+    function pickField(obj, names) { for (const name of names) { const key = Object.keys(obj).find(k => k.toLowerCase() === name.toLowerCase()); if (key) return key; } return null; }
+    function domainFromURL(url) { try { return new URL(url).hostname.replace(/^www\./,''); } catch { return ''; } }
+    function scoreItem(item, q, keys) {
+      if (!q) return 0; const hay = keys.map(k => (item[k]||'').toLowerCase()).join(' • ');
+      const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+      let score = 0; for (const t of terms) { const re = new RegExp(`\\b${t.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\$&')}\\b`,'g'); const m = hay.match(re); if (m) score += m.length; }
+      return score;
+    }
+
+    // ---- Elements -----------------------------------------------------------
+    const $grid = document.getElementById('grid');
+    const $count = document.getElementById('count');
+    const $updated = document.getElementById('updated');
+    const $sourceName = document.getElementById('csv-name');
+    const $empty = document.getElementById('empty');
+    const $q = document.getElementById('q');
+    const $sort = document.getElementById('sort');
+    const $picker = document.getElementById('lang-picker');
+    const $title = document.getElementById('site-title');
+    const $intro = document.getElementById('intro');
+    const $clear = document.getElementById('clear');
+
+    let LANG = detectLang();
+    setLang(LANG);
+
+    function applyI18n() {
+      const t = TRANSLATIONS[LANG];
+      $title.textContent = t.siteTitle;
+      $intro.textContent = t.intro;
+      $q.placeholder = t.placeholders.search;
+      $sort.options[0].textContent = t.labels.sortRelevance;
+      $sort.options[1].textContent = t.labels.sortTA;
+      $sort.options[2].textContent = t.labels.sortAT;
+      $sort.options[3].textContent = t.labels.sortSourceA;
+      $sort.options[4].textContent = t.labels.sortSourceZ;
+      $empty.textContent = t.empty;
+      // language picker
+      $picker.innerHTML = '';
+      const names = { nb:'Norsk', da:'Dansk', sv:'Svenska' };
+      CONFIG.locales.forEach(l => { const opt = document.createElement('option'); opt.value = l; opt.textContent = names[l] || l.toUpperCase(); if (l === LANG) opt.selected = true; $picker.appendChild(opt); });
+    }
+
+    $picker.addEventListener('change', () => { LANG = $picker.value; setLang(LANG); applyI18n(); loadData(); });
+    $clear.addEventListener('click', () => { $q.value=''; render(currentItems); });
+
+    // ---- Data load & render -------------------------------------------------
+    let allItems = []; // raw
+    let currentItems = []; // filtered/sorted
+    let FIELDS = { title:null, summary:null, link:null, source:null };
+
+    function mapRecordsToItems(records) {
+      if (!records.length) return [];
+      const probe = records[0];
+      FIELDS.title   = pickField(probe, ['headline','title','tittel','overskrift']);
+      FIELDS.summary = pickField(probe, ['summary','description','ingress','lede']);
+      FIELDS.link    = pickField(probe, ['link','url','href']);
+      FIELDS.source  = pickField(probe, ['source','kilde','domain','host']);
+      return records.map(r => ({
+        title: (r[FIELDS.title]||'').trim(),
+        summary: (r[FIELDS.summary]||'').trim(),
+        link: (r[FIELDS.link]||'').trim(),
+        source: (r[FIELDS.source]||'').trim() || domainFromURL(r[FIELDS.link]||'')
+      }));
+    }
+
+    async function loadCSV(path, nameHint) {
+      const res = await fetch(path, { cache: 'no-store' });
+      const text = await res.text();
+      const { records } = parseCSV(text);
+      $sourceName.textContent = nameHint || path.split('/').pop();
+      return mapRecordsToItems(records);
+    }
+
+    function render(list) {
+      const q = $q.value.trim();
+      const keys = ['title','summary'];
+      let withScores = list.map(item => ({ item, score: scoreItem(item, q, keys) }));
+      if (q) withScores = withScores.filter(o => o.score > 0);
+      const mode = $sort.value;
+      if (mode === 'relevance') withScores.sort((a,b)=> b.score - a.score);
+      else if (mode === 'title-asc') withScores.sort((a,b)=> a.item.title.localeCompare(b.item.title));
+      else if (mode === 'title-desc') withScores.sort((a,b)=> b.item.title.localeCompare(a.item.title));
+      else if (mode === 'source-asc') withScores.sort((a,b)=> (a.item.source||'').localeCompare(b.item.source||''));
+      else if (mode === 'source-desc') withScores.sort((a,b)=> (b.item.source||'').localeCompare(a.item.source||''));
+
+      const finalList = withScores.map(x=>x.item);
+      currentItems = finalList;
+
+      $grid.innerHTML = '';
+      if (!finalList.length) { $empty.hidden=false; $count.textContent = TRANSLATIONS[LANG].labels.count(0); return; }
+      $empty.hidden=true;
+      const frag = document.createDocumentFragment();
+      finalList.forEach(({title, summary, link, source}) => {
+        const card = document.createElement('article');
+        const h2 = document.createElement('h2'); h2.textContent = title || '(uten tittel)'; card.appendChild(h2);
+        if (summary) { const p = document.createElement('p'); p.textContent = summary; card.appendChild(p); }
+        const row = document.createElement('div'); row.className='row';
+        const src = document.createElement('span'); src.textContent = source || '';
+        const a = document.createElement('a'); a.href = link || '#'; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = LANG==='da' ? 'Læs mere →' : (LANG==='sv' ? 'Läs mer →' : 'Les mer →');
+        row.appendChild(src); row.appendChild(a); card.appendChild(row);
+        frag.appendChild(card);
+      });
+      $grid.appendChild(frag);
+      $count.textContent = TRANSLATIONS[LANG].labels.count(finalList.length);
+      const ts = new Date().toLocaleString();
+      $updated.textContent = TRANSLATIONS[LANG].labels.updated(ts);
+    }
+
+    async function loadData() {
+      const dataCfg = CONFIG.data[LANG] || CONFIG.data[CONFIG.defaultLocale];
+      if (dataCfg.type === 'csv') {
+        try { allItems = await loadCSV(dataCfg.path, dataCfg.name); }
+        catch (e) { console.error('CSV load failed', e); allItems = []; }
+      } else { // static items
+        allItems = (dataCfg.items || []).map(x => ({ title:x.title||'', summary:x.summary||'', link:x.link||'', source:x.source||'' }));
+        $sourceName.textContent = 'static';
+      }
+      render(allItems);
+    }
+
+    // events
+    $q.addEventListener('input', () => render(allItems));
+    $sort.addEventListener('change', () => render(allItems));
+
+    // boot
+    let LANG = detectLang(); setLang(LANG); applyI18n(); loadData();
+  </script>
+</body>
+</html>
