@@ -3,132 +3,180 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CSV Viewer</title>
+  <title>News (Grouped by Subgroup)</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 16px; }
-    .status { margin-bottom: 12px; color: #555; }
-    pre { padding: 12px; background: #f6f8fa; overflow: auto; border: 1px solid #e5e7eb; }
-    table { border-collapse: collapse; margin-top: 16px; width: 100%; }
-    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
-    th { background: #fafafa; }
-    .hidden { display: none; }
+    :root { --fg:#0b0d12; --muted:#5b6575; --border:#e6e8ee; --accent:#1f6feb; --bg:#fff; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#0b0c10; }
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--fg)}
+    .wrap{max-width:900px; margin:0 auto; padding:24px}
+    h1{margin:0 0 10px 0; font-size:clamp(1.25rem,1rem + 1.5vw,2rem)}
+    .status{color:var(--muted); margin-bottom:8px}
+    section{margin:22px 0}
+    section>h2{
+      margin:0 0 10px 0; padding:10px 12px; border:1px solid var(--border); border-radius:12px;
+      background:linear-gradient(180deg,rgba(0,0,0,.04),transparent); font-size:1rem;
+      display:flex; align-items:center; gap:10px; justify-content:space-between
+    }
+    .count{color:var(--muted); font-size:.9rem}
+    ul{list-style:none; padding:0; margin:0; display:grid; gap:10px}
+    li{border:1px solid var(--border); border-radius:12px; padding:12px}
+    a{color:var(--accent); text-decoration:none; font-weight:600}
+    a:hover{text-decoration:underline}
+    .summary{color:var(--muted); margin-top:4px}
+    .empty{margin-top:16px; color:var(--muted)}
   </style>
 </head>
 <body>
-  <h1>CSV Viewer</h1>
-  <div class="status" id="status">Loading…</div>
-
-  <h2>Raw CSV</h2>
-  <pre id="raw">(waiting…)</pre>
-
-  <h2>Table</h2>
-  <div id="table-wrap"></div>
+  <div class="wrap">
+    <h1>News</h1>
+    <div class="status" id="status">Loading…</div>
+    <div id="app"></div>
+    <div id="empty" class="empty" hidden>No items found.</div>
+  </div>
 
   <script>
-    // --- CONFIG: adjust if needed ---
-    const CSV_PATH = "./data/weekly.csv"; // relative to index.html
+    const CSV_PATH = "./data/weekly.csv"; // adjust if needed
 
-    // --- Minimal CSV parsing with quotes support ---
+    // --- CSV utils (delimiter autodetect + BOM handling + quoted fields) ---
     function detectDelimiter(text) {
-      // Pick the delimiter with most hits in the first non-empty line
       const first = (text.split(/\r?\n/).find(l => l.trim().length) || "");
       const counts = { ",": (first.match(/,/g) || []).length,
                        ";": (first.match(/;/g) || []).length,
                        "\t": (first.match(/\t/g) || []).length };
       return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0] || ",";
     }
-
     function parseCSV(text) {
-      // Strip BOM if present
       if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-      const delim = detectDelimiter(text);
-      const rows = [];
-      let i = 0, field = "", row = [], inQuotes = false;
-
+      const d = detectDelimiter(text);
+      const rows = []; let i=0, field="", row=[], q=false;
       while (i < text.length) {
         const c = text[i];
-        if (inQuotes) {
-          if (c === '"') {
-            const n = text[i+1];
-            if (n === '"') { field += '"'; i++; } else { inQuotes = false; }
-          } else {
-            field += c;
-          }
+        if (q) {
+          if (c === '"') { const n = text[i+1]; if (n === '"'){ field+='"'; i++; } else { q=false; } }
+          else field += c;
         } else {
-          if (c === '"') inQuotes = true;
-          else if (c === delim) { row.push(field); field = ""; }
+          if (c === '"') q = true;
+          else if (c === d) { row.push(field.trim()); field=""; }
           else if (c === "\n" || c === "\r") {
             if (c === "\r" && text[i+1] === "\n") i++;
-            row.push(field); field = "";
-            if (row.length && row.some(x => x !== "")) rows.push(row);
-            row = [];
-          } else {
-            field += c;
-          }
+            row.push(field.trim()); field="";
+            if (row.some(x=>x!=="")) rows.push(row); row=[];
+          } else field += c;
         }
         i++;
       }
-      if (field.length || row.length) { row.push(field); rows.push(row); }
-
-      // Trim cells
-      return rows.map(r => r.map(x => (x ?? "").trim()));
+      if (field.length || row.length) { row.push(field.trim()); rows.push(row); }
+      return rows;
     }
 
-    function renderTable(rows) {
-      const wrap = document.getElementById("table-wrap");
-      wrap.innerHTML = "";
-      if (!rows.length) { wrap.textContent = "No rows."; return; }
-
-      const table = document.createElement("table");
-      const thead = document.createElement("thead");
-      const tbody = document.createElement("tbody");
-
-      // header row (first row)
-      const htr = document.createElement("tr");
-      rows[0].forEach(h => {
-        const th = document.createElement("th");
-        th.textContent = h || "";
-        htr.appendChild(th);
-      });
-      thead.appendChild(htr);
-
-      // data rows
-      for (let r = 1; r < rows.length; r++) {
-        const tr = document.createElement("tr");
-        rows[r].forEach(cell => {
-          const td = document.createElement("td");
-          td.textContent = cell || "";
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
+    function keyLookup(obj, candidates) {
+      const keys = Object.keys(obj);
+      for (const name of candidates) {
+        const k = keys.find(x => x.toLowerCase() === name.toLowerCase());
+        if (k) return k;
       }
+      return null;
+    }
 
-      table.appendChild(thead);
-      table.appendChild(tbody);
-      wrap.appendChild(table);
+    function groupBySubgroup(records) {
+      if (!records.length) return new Map();
+      // Heuristics for headers
+      const probe = records[0];
+      const H = {
+        subgroup: keyLookup(probe, ["subgroup", "group", "category", "kategori", "undergruppe"]),
+        title:    keyLookup(probe, ["title","headline","tittel","overskrift"]),
+        link:     keyLookup(probe, ["link","url","href"]),
+        summary:  keyLookup(probe, ["summary","description","ingress","lede"])
+      };
+      if (!H.subgroup) console.warn("No 'subgroup' column detected. Available columns:", Object.keys(probe));
+
+      const out = new Map(); // subgroup -> items[]
+      for (const r of records) {
+        const sg = (H.subgroup ? r[H.subgroup] : "Other") || "Other";
+        const item = {
+          title: (H.title && r[H.title]) || "(untitled)",
+          link:  (H.link  && r[H.link])  || "",
+          summary: (H.summary && r[H.summary]) || ""
+        };
+        if (!out.has(sg)) out.set(sg, []);
+        out.get(sg).push(item);
+      }
+      return out;
+    }
+
+    function renderGroups(groups) {
+      const app = document.getElementById("app");
+      const empty = document.getElementById("empty");
+      app.innerHTML = "";
+
+      if (!groups.size) { empty.hidden = false; return; }
+      empty.hidden = true;
+
+      // sort subgroups by name
+      const entries = [...groups.entries()].sort((a,b) => a[0].localeCompare(b[0]));
+      for (const [name, items] of entries) {
+        const section = document.createElement("section");
+
+        const h2 = document.createElement("h2");
+        h2.innerHTML = `<span>${name}</span><span class="count">${items.length}</span>`;
+        section.appendChild(h2);
+
+        const ul = document.createElement("ul");
+        for (const it of items) {
+          const li = document.createElement("li");
+          if (it.link) {
+            const a = document.createElement("a");
+            a.href = it.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+            a.textContent = it.title;
+            li.appendChild(a);
+          } else {
+            const strong = document.createElement("strong");
+            strong.textContent = it.title;
+            li.appendChild(strong);
+          }
+          if (it.summary) {
+            const p = document.createElement("div");
+            p.className = "summary";
+            p.textContent = it.summary;
+            li.appendChild(p);
+          }
+          ul.appendChild(li);
+        }
+        section.appendChild(ul);
+        app.appendChild(section);
+      }
     }
 
     async function main() {
       const status = document.getElementById("status");
-      const raw = document.getElementById("raw");
       try {
         status.textContent = `Fetching ${CSV_PATH} …`;
         const res = await fetch(`${CSV_PATH}?v=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status} for ${CSV_PATH}`);
         const text = await res.text();
-        raw.textContent = text;
+
+        // parse
         const rows = parseCSV(text);
-        renderTable(rows);
-        status.textContent = `Loaded ${rows.length - 1} rows from ${CSV_PATH}`;
+        if (!rows.length) throw new Error("CSV is empty");
+        const headers = rows[0].map(h => (h || "").replace(/^\ufeff/, "").trim());
+        const records = rows.slice(1).map(r => {
+          const o = {};
+          headers.forEach((h, i) => o[h] = r[i] ?? "");
+          return o;
+        });
+
+        const groups = groupBySubgroup(records);
+        renderGroups(groups);
+        status.textContent = `Loaded ${records.length} rows from ${CSV_PATH}`;
       } catch (err) {
-        status.textContent = `Error: ${err.message}`;
-        raw.textContent = "(failed to load)";
-        document.getElementById("table-wrap").textContent =
-          "Could not load CSV. Open your CSV directly to verify it’s served: " + CSV_PATH;
         console.error(err);
+        status.textContent = `Error: ${err.message}`;
+        document.getElementById("empty").hidden = false;
       }
     }
-
     main();
   </script>
 </body>
