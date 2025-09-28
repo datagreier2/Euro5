@@ -132,7 +132,17 @@
     }
 
     // ---- CSV parsing --------------------------------------------------------
+    function detectDelimiter(text){
+      const firstLine = (text.split(/
+?
+/).find(l=>l.trim().length>0) || '');
+      const candidates = [',',';','	'];
+      let best = ',', max = -1;
+      for (const d of candidates){ const count = (firstLine.match(new RegExp(`\${d}`,'g'))||[]).length; if (count>max){ max=count; best=d; } }
+      return best;
+    }
     function parseCSV(text) {
+      const delim = detectDelimiter(text); // ',', ';', or '	'
       const rows = []; let i=0, field='', row=[], inQuotes=false;
       while (i < text.length) {
         const c = text[i];
@@ -140,6 +150,23 @@
           if (c === '"') { const n = text[i+1]; if (n === '"'){ field += '"'; i++; } else { inQuotes=false; } }
           else field += c;
         } else {
+          if (c === '"') inQuotes = true;
+          else if (c === delim) { row.push(field.trim()); field=''; }
+          else if (c === '
+' || c==='
+') { if (c==='
+' && text[i+1]==='
+') i++; row.push(field.trim()); field=''; if (row.some(x=>x!=='')) rows.push(row); row=[]; }
+          else field += c;
+        }
+        i++;
+      }
+      if (field.length || row.length) { row.push(field.trim()); rows.push(row); }
+      if (!rows.length) return { headers:[], records:[] };
+      const headers = rows[0].map(h=>h.trim());
+      const records = rows.slice(1).map(r=>{ const o={}; headers.forEach((h,idx)=>o[h]=r[idx]??''); return o; });
+      return { headers, records };
+    } else {
           if (c === '"') inQuotes = true;
           else if (c === ',') { row.push(field.trim()); field=''; }
           else if (c === '\n' || c==='\r') { if (c==='\r' && text[i+1]==='\n') i++; row.push(field.trim()); field=''; if (row.some(x=>x!=='')) rows.push(row); row=[]; }
@@ -219,11 +246,20 @@
     }
 
     async function loadCSV(path, nameHint) {
-      const res = await fetch(path, { cache: 'no-store' });
-      const text = await res.text();
-      const { records } = parseCSV(text);
-      $sourceName.textContent = nameHint || path.split('/').pop();
-      return mapRecordsToItems(records);
+      try {
+        const res = await fetch(`${path}?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status} for ${path}`);
+        const text = await res.text();
+        const { records } = parseCSV(text);
+        $sourceName.textContent = nameHint || path.split('/').pop();
+        return mapRecordsToItems(records);
+      } catch (err) {
+        console.error('CSV load failed:', err);
+        $empty.hidden = false;
+        $empty.textContent = `Kunne ikke laste CSV (${err.message}). Sjekk at filen finnes på ${path}.`;
+        $count.textContent = '0 saker';
+        return [];
+      }
     }
 
     function render(list) {
