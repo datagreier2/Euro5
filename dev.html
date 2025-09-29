@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EURO5 Dev Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <nav class="topnav">
+    <div class="nav-logo">
+      <a href="/">
+        <img src="./Euro5_beta_logo.svg" alt="Euro5 logo" style="height:32px;width:auto;vertical-align:middle;">
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="om.html">om</a>
+      <a href="hvorfor.html">hvorfor</a>
+      <a href="dev.html">dev</a>
+    </div>
+  </nav>
+  <main class="wrap">
+    <header>
+      <h1 style="font-size:1.4rem;font-weight:700;margin-bottom:8px;">Developer log</h1>
+      <div class="intro" style="font-size:1rem;font-weight:400;margin-bottom:8px;">Latest fixes & issues.</div>
+    </header>
+    <div class="pill-toggle" style="display:flex;gap:12px;margin-bottom:18px;">
+      <button id="showFixes" class="pill active" type="button">Latest fixes</button>
+      <button id="showIssues" class="pill" type="button">Known issues</button>
+    </div>
+    <section id="fixes-section">
+      <ul id="fixes-list"></ul>
+    </section>
+    <section id="issues-section" style="display:none;">
+      <ul id="issues-list"></ul>
+    </section>
+  </main>
+  <script>
+    // Simple CSV parser for two columns
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length);
+      const rows = lines.map(line => {
+        // Handle quoted fields and commas
+        const match = line.match(/(?:"([^"]*)"|([^,]+))(?:,|$)(?:"([^"]*)"|([^,]+))?/);
+        if (match) {
+          return [match[1] || match[2] || "", match[3] || match[4] || ""];
+        }
+        const parts = line.split(',');
+        return [parts[0] || "", parts[1] || ""];
+      });
+      return rows;
+    }
+    async function loadChangelog() {
+      try {
+        const res = await fetch('./data/changelog.csv?v=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to load changelog.csv');
+        const text = await res.text();
+        const rows = parseCSV(text);
+        if (!rows.length) return;
+        const fixesList = document.getElementById('fixes-list');
+        const issuesList = document.getElementById('issues-list');
+        fixesList.innerHTML = '';
+        issuesList.innerHTML = '';
+        // Skip header row and reverse order
+        const dataRows = rows.slice(1).reverse();
+        for (const [fix, issue] of dataRows) {
+          if (fix && fix.trim()) {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${fix}</strong>`;
+            fixesList.appendChild(li);
+          }
+          if (issue && issue.trim()) {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${issue}</strong>`;
+            issuesList.appendChild(li);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading changelog:', err);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      loadChangelog();
+      // Pill toggle logic
+      const showFixes = document.getElementById('showFixes');
+      const showIssues = document.getElementById('showIssues');
+      const fixesSection = document.getElementById('fixes-section');
+      const issuesSection = document.getElementById('issues-section');
+      showFixes.addEventListener('click', function() {
+        showFixes.classList.add('active');
+        showIssues.classList.remove('active');
+        fixesSection.style.display = '';
+        issuesSection.style.display = 'none';
+      });
+      showIssues.addEventListener('click', function() {
+        showIssues.classList.add('active');
+        showFixes.classList.remove('active');
+        fixesSection.style.display = 'none';
+        issuesSection.style.display = '';
+      });
+    });
+  </script>
+</body>
+</html>
