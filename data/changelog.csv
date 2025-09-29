@@ -17,3 +17,6 @@ About and changelog pages created,Source diversity still too low. Needs priority
 Quality measurement now includes lexical logic to ensure topic diversity.,Quality measurement by topic score needs improvement
 "Quality measurement now includes diversification score for topic, region",Quality measurement should score better by nation/region
 Deduplication faster,Validate quality of new deduplication logic
+"Avoid Trump in ""the 5"" at all costs",Debate article matching simplified but may be simplified too much. Validate several outputs to ensure quality.
+"Create logic for picking ""the 5""","Implement ""the 5"" front end"
+,"Fetch svg logos for ""the 5"" from sources at runtime."
