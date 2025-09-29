@@ -5,91 +5,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EURO5 News</title>
-  <style>
-    .domain-label {
-      font-size: 0.78em;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      margin-top: 2px;
-      margin-bottom: 2px;
-      text-transform: uppercase;
-    }
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .pill {
-      background: #353535;
-      color: var(--fg);
-      border: none;
-      border-radius: 20px;
-      padding: 7px 18px;
-      font-size: 1rem;
-      font-family: 'Lexend', system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    .pill.active {
-      background: #75D8D1;
-      color: #404040;
-    }
-    :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#404040; }
-    @media (prefers-color-scheme: dark) {
-      :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#404040; }
-    }
-    *{box-sizing:border-box}
-  body{margin:0; font:16px/1.5 'Lexend', system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--fg)}
-  h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; }
-    .wrap{max-width:900px; margin:0 auto; padding:24px}
-    h1{margin:0 0 10px 0; font-size:clamp(1.25rem,1rem + 1.5vw,2rem)}
-    .status{color:var(--muted); margin-bottom:8px}
-    section{margin:22px 0}
-    section>h2{
-      margin:0 0 10px 0; padding:10px 12px; border:1px solid var(--border); border-radius:12px;
-      background:linear-gradient(180deg,rgba(0,0,0,.04),transparent); font-size:1rem;
-      display:flex; align-items:center; gap:10px; justify-content:space-between
-    }
-    .count{color:var(--muted); font-size:.9rem}
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      max-width: 100%;
-    }
-    li {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 14px;
-      background: linear-gradient(180deg,rgba(0,0,0,.02),transparent);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      min-height: 120px;
-    }
-    @media (min-width: 900px) {
-      ul {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-  a{color:#75D8D1; text-decoration:none; font-weight:600}
-  a:hover{color:#75D8D1; text-decoration:underline}
-  .summary{color:#FFFFFF; margin-top:4px}
-    .empty{margin-top:16px; color:var(--muted)}
-  </style>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <nav class="topnav">
+    <div class="nav-logo">
+      <a href="/">
+        <img src="./Euro5_beta_logo.svg" alt="Euro5 logo" style="height:32px;width:auto;vertical-align:middle;">
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="om.html">om</a>
+      <a href="hvorfor.html">hvorfor</a>
+      <a href="dev.html">dev</a>
+    </div>
+  </nav>
 
   <div class="wrap">
     <div id="top-content">
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:18px;">
-        <img src="./Euro5_beta_logo.svg" alt="Euro5 logo" style="height:40px;width:auto;display:block;">
+        
         <h1 style="margin:0;">Ukentlig nyhetsoppdatering</h1>
         <div style="margin-top:10px; color:#e7e9ee; font-size:1.08rem; max-width:600px;">
           EURO5 samler ukens nyheter fra uken, hver søndag.
