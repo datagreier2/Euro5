@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>News (Grouped by Subgroup)</title>
   <style>
+    .domain-label {
+      font-size: 0.78em;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-top: 2px;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
     .pills {
       display: flex;
       flex-wrap: wrap;
@@ -22,12 +31,12 @@
       transition: background 0.2s, color 0.2s;
     }
     .pill.active {
-      background: var(--accent);
-      color: #fff;
+      background: #75D8D1;
+      color: #404040;
     }
-    :root { --fg:#0b0d12; --muted:#5b6575; --border:#e6e8ee; --accent:#1f6feb; --bg:#fff; }
+    :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#404040; }
     @media (prefers-color-scheme: dark) {
-      :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#0b0c10; }
+      :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#404040; }
     }
     *{box-sizing:border-box}
     body{margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--fg)}
@@ -65,16 +74,16 @@
         grid-template-columns: repeat(4, 1fr);
       }
     }
-    a{color:var(--accent); text-decoration:none; font-weight:600}
-    a:hover{text-decoration:underline}
-    .summary{color:var(--muted); margin-top:4px}
+  a{color:#75D8D1; text-decoration:none; font-weight:600}
+  a:hover{color:#75D8D1; text-decoration:underline}
+  .summary{color:#FFFFFF; margin-top:4px}
     .empty{margin-top:16px; color:var(--muted)}
   </style>
 </head>
 <body>
   <div class="wrap">
-  <h1>News</h1>
-  <div class="status" id="status">Loading…</div>
+  <h1>EURO5 News</h1>
+    <!-- Status div removed -->
   <div id="pills" class="pills"></div>
   <div id="app"></div>
   <div id="empty" class="empty" hidden>No items found.</div>
@@ -146,7 +155,8 @@
           title: (H.title && r[H.title]) || "(untitled)",
           link:  (H.link  && r[H.link])  || "",
           summary: (H.summary && r[H.summary]) || "",
-          subgroup: (H.subgroup && r[H.subgroup]) || ""
+          subgroup: (H.subgroup && r[H.subgroup]) || "",
+          source_url: r["source_url"] || ""
         };
         if (!out.has(cat)) out.set(cat, []);
         out.get(cat).push(item);
@@ -189,6 +199,20 @@
             const strong = document.createElement("strong");
             strong.textContent = it.title;
             li.appendChild(strong);
+          }
+          // Show domain
+          let domain = "";
+          try {
+            let url = it.link || it.source_url || "";
+            if (url) {
+              domain = new URL(url, window.location.href).hostname.replace(/^www\./, "");
+            }
+          } catch(e) {}
+          if (domain) {
+            const d = document.createElement("div");
+            d.className = "domain-label";
+            d.textContent = domain.toUpperCase();
+            li.appendChild(d);
           }
           if (it.summary) {
             const p = document.createElement("div");
@@ -236,9 +260,8 @@
     }
 
     async function main() {
-      const status = document.getElementById("status");
-      try {
-        status.textContent = `Fetching ${CSV_PATH} …`;
+        try {
+          // Status message removed
         const res = await fetch(`${CSV_PATH}?v=${Date.now()}`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status} for ${CSV_PATH}`);
         const text = await res.text();
@@ -257,10 +280,9 @@
   allGroups = groups;
   renderPills(groups);
   renderGroups(groups);
-  status.textContent = `Loaded ${records.length} rows from ${CSV_PATH}`;
       } catch (err) {
         console.error(err);
-        status.textContent = `Error: ${err.message}`;
+          // Status message removed
         document.getElementById("empty").hidden = false;
       }
     }
