@@ -1,0 +1,13 @@
+Latest fixes,Known issues
+Improved categorisation using GPT 5 mini,Some of the sources fail to fetch
+Normalised sources to avoid bias toward rich streams,Categorisation not very precise
+Improved 'most debated' by crawling Reddit,German and Italian contents is somehow slipping in to main stream
+Improved source streams by adding sitemap fetching to fetch strategy,Sporadical bad rendering of special characters
+Added 'enrichment phase' to populate titles and summaries better,HTML is bad
+Expanded sources to 110 incuding more countries,Non-Scandi vs Scandi sources not weigthed properly. Bias toward UK in both.
+Normalised bias between eastern/western Europe,"""The week in 5"" logic still not working"
+Fixed item matchng between main stream and Reddit,"Push to Git still manual, must be automated"
+Cleaned summaries that included markup language and links,Costs racked up to a whopping 12kr/week. Need financial support.
+Replaced all LLM logic except in careogirasation step because it was better,No Swedish and Danish version.
+Connected to domain euro5.news,SEO in non-existant
+Improved speed and cost of categorisation by replacing GPT5 mini with GPT5 nano (identical results),
