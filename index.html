@@ -178,12 +178,71 @@
       if (!filteredGroups.size) { empty.hidden = false; return; }
       empty.hidden = true;
 
-      // sort subgroups by name
+      // Shuffle all cards if 'All' view
+      if (!activeCategory) {
+        // Flatten all items into one array
+        let allItems = [];
+        for (const items of filteredGroups.values()) {
+          allItems = allItems.concat(items);
+        }
+        // Shuffle
+        for (let i = allItems.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allItems[i], allItems[j]] = [allItems[j], allItems[i]];
+        }
+        // Render as a single section
+        const section = document.createElement("section");
+        const h2 = document.createElement("h2");
+        h2.innerHTML = `<span>Alle kategorier</span><span class="count">${allItems.length}</span>`;
+        section.appendChild(h2);
+        const ul = document.createElement("ul");
+        for (const it of allItems) {
+          const li = document.createElement("li");
+          if (it.link) {
+            const a = document.createElement("a");
+            a.href = it.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+            a.textContent = it.title;
+            li.appendChild(a);
+          } else {
+            const strong = document.createElement("strong");
+            strong.textContent = it.title;
+            li.appendChild(strong);
+          }
+          // Show domain
+          let domain = "";
+          try {
+            let url = it.link || it.source_url || "";
+            if (url) {
+              domain = new URL(url, window.location.href).hostname.replace(/^www\./, "");
+            }
+          } catch(e) {}
+          if (domain) {
+            const d = document.createElement("div");
+            d.className = "domain-label";
+            d.textContent = domain.toUpperCase();
+            li.appendChild(d);
+          }
+          if (it.summary) {
+            const p = document.createElement("div");
+            p.className = "summary";
+            let capped = it.summary;
+            if (capped.length > 100) capped = capped.slice(0, 97) + "...";
+            p.textContent = capped;
+            li.appendChild(p);
+          }
+          ul.appendChild(li);
+        }
+        section.appendChild(ul);
+        app.appendChild(section);
+        return;
+      }
+
+      // Otherwise, show grouped and sorted
       const entries = [...filteredGroups.entries()].sort((a,b) => a[0].localeCompare(b[0]));
       for (const [name, items] of entries) {
         const section = document.createElement("section");
-  // Show 'Økonomi' instead of 'Næringsliv og Nasjonaløkonomi' (case-insensitive)
-  const displayName = (/^næringsliv og nasjonaløkonomi$/i.test(name)) ? "Økonomi" : name;
+        // Show 'Økonomi' instead of 'Næringsliv og Nasjonaløkonomi' (case-insensitive)
+        const displayName = (/^næringsliv og nasjonaløkonomi$/i.test(name)) ? "Økonomi" : name;
         const h2 = document.createElement("h2");
         h2.innerHTML = `<span>${displayName}</span><span class="count">${items.length}</span>`;
         section.appendChild(h2);
