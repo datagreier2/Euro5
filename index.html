@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EURO5 News</title>
@@ -21,12 +22,14 @@
       margin-bottom: 18px;
     }
     .pill {
-      background: var(--border);
+      background: #353535;
       color: var(--fg);
       border: none;
       border-radius: 20px;
       padding: 7px 18px;
       font-size: 1rem;
+      font-family: 'Lexend', system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      font-weight: 500;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
@@ -39,7 +42,8 @@
       :root { --fg:#e7e9ee; --muted:#9aa3b2; --border:#242938; --accent:#3b82f6; --bg:#404040; }
     }
     *{box-sizing:border-box}
-    body{margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--fg)}
+  body{margin:0; font:16px/1.5 'Lexend', system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; background:var(--bg); color:var(--fg)}
+  h1, h2, h3, h4, h5, h6 { font-family: 'Lexend', system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif; }
     .wrap{max-width:900px; margin:0 auto; padding:24px}
     h1{margin:0 0 10px 0; font-size:clamp(1.25rem,1rem + 1.5vw,2rem)}
     .status{color:var(--muted); margin-bottom:8px}
@@ -81,15 +85,39 @@
   </style>
 </head>
 <body>
+
   <div class="wrap">
-  <h1>EURO5 Uke</h1>
+    <div id="top-content">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:18px;">
+        <img src="./Euro5_beta_logo.svg" alt="Euro5 logo" style="height:40px;width:auto;display:block;">
+        <h1 style="margin:0;">Ukentlig nyhetsoppdatering</h1>
+        <div style="margin-top:10px; color:#e7e9ee; font-size:1.08rem; max-width:600px;">
+          EURO5 samler ukens nyheter fra uken, hver søndag.
+        </div>
+        <div style="margin-top:8px; color:#b0b8c1; font-size:1rem; max-width:600px;">
+          Nyhetene blir hentet fra europeiske kilder på engelsk, svensk, norsk og dansk. Siden er under kontinuerlig utvikling og er i en testfase.
+        </div>
+      </div>
+  <div style="width:100%; display:flex; justify-content:center; margin-bottom:40px;">
+        <button id="hideTopBtn" style="margin-bottom:0; font-size:0.95rem; background:#D8C475; color:#404040; border:none; border-radius:14px; padding:4px 16px; cursor:pointer;">Skjul</button>
+      </div>
+    </div>
+
     <!-- Status div removed -->
-  <div id="pills" class="pills"></div>
-  <div id="app"></div>
-  <div id="empty" class="empty" hidden>No items found.</div>
+    <div id="pills" class="pills"></div>
+    <div id="app"></div>
+    <div id="empty" class="empty" hidden>No items found.</div>
   </div>
 
   <script>
+  // Hide/Show top content logic
+  document.addEventListener('DOMContentLoaded', function() {
+    const topContent = document.getElementById('top-content');
+    const hideBtn = document.getElementById('hideTopBtn');
+    hideBtn.addEventListener('click', function() {
+      topContent.style.display = 'none';
+    });
+  });
   let allGroups = new Map();
   let activeCategory = null;
     const CSV_PATH = "./data/weekly.csv"; // adjust if needed
@@ -297,7 +325,7 @@
       // 'All' pill
       const allBtn = document.createElement("button");
       allBtn.className = "pill" + (activeCategory === null ? " active" : "");
-      allBtn.textContent = "All";
+  allBtn.textContent = "Alle";
       allBtn.onclick = () => {
         activeCategory = null;
         renderPills(allGroups);
@@ -321,9 +349,11 @@
     async function main() {
         try {
           // Status message removed
-        const res = await fetch(`${CSV_PATH}?v=${Date.now()}`, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status} for ${CSV_PATH}`);
-        const text = await res.text();
+  const res = await fetch(`${CSV_PATH}?v=${Date.now()}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${CSV_PATH}`);
+  // Use TextDecoder to ensure UTF-8 decoding
+  const buf = await res.arrayBuffer();
+  const text = new TextDecoder('utf-8').decode(buf);
 
         // parse
         const rows = parseCSV(text);
