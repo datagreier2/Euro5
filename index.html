@@ -131,23 +131,25 @@
       // Heuristics for headers
       const probe = records[0];
       const H = {
-        subgroup: keyLookup(probe, ["subgroup", "group", "category", "kategori", "undergruppe"]),
+        category: keyLookup(probe, ["category", "kategori"]),
+        subgroup: keyLookup(probe, ["subgroup", "group", "undergruppe"]),
         title:    keyLookup(probe, ["title","headline","tittel","overskrift"]),
         link:     keyLookup(probe, ["link","url","href"]),
         summary:  keyLookup(probe, ["summary","description","ingress","lede"])
       };
-      if (!H.subgroup) console.warn("No 'subgroup' column detected. Available columns:", Object.keys(probe));
+      if (!H.category) console.warn("No 'category' column detected. Available columns:", Object.keys(probe));
 
-      const out = new Map(); // subgroup -> items[]
+      const out = new Map(); // category -> items[]
       for (const r of records) {
-        const sg = (H.subgroup ? r[H.subgroup] : "Other") || "Other";
+        const cat = (H.category ? r[H.category] : "Other") || "Other";
         const item = {
           title: (H.title && r[H.title]) || "(untitled)",
           link:  (H.link  && r[H.link])  || "",
-          summary: (H.summary && r[H.summary]) || ""
+          summary: (H.summary && r[H.summary]) || "",
+          subgroup: (H.subgroup && r[H.subgroup]) || ""
         };
-        if (!out.has(sg)) out.set(sg, []);
-        out.get(sg).push(item);
+        if (!out.has(cat)) out.set(cat, []);
+        out.get(cat).push(item);
       }
       return out;
     }
@@ -170,11 +172,11 @@
       const entries = [...filteredGroups.entries()].sort((a,b) => a[0].localeCompare(b[0]));
       for (const [name, items] of entries) {
         const section = document.createElement("section");
-
+  // Show 'Økonomi' instead of 'Næringsliv og Nasjonaløkonomi' (case-insensitive)
+  const displayName = (/^næringsliv og nasjonaløkonomi$/i.test(name)) ? "Økonomi" : name;
         const h2 = document.createElement("h2");
-        h2.innerHTML = `<span>${name}</span><span class="count">${items.length}</span>`;
+        h2.innerHTML = `<span>${displayName}</span><span class="count">${items.length}</span>`;
         section.appendChild(h2);
-
         const ul = document.createElement("ul");
         for (const it of items) {
           const li = document.createElement("li");
@@ -223,7 +225,7 @@
       for (const cat of categories) {
         const btn = document.createElement("button");
         btn.className = "pill" + (activeCategory === cat ? " active" : "");
-        btn.textContent = cat;
+  btn.textContent = (/^næringsliv og nasjonaløkonomi$/i.test(cat)) ? "Økonomi" : cat;
         btn.onclick = () => {
           activeCategory = cat;
           renderPills(allGroups);
