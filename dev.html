@@ -43,120 +43,120 @@
     </section>
   </main>
   <script>
+    console.log('Script loaded');
     // Simple CSV parser for two columns
     function parseCSV(text) {
       const lines = text.split(/\r?\n/).filter(l => l.trim().length);
       const rows = lines.map(line => {
         // Handle quoted fields and commas
-        const match = line.match(/(?:"([^"]*)"|([^,]+))(?:,|$)(?:"([^"]*)"|([^,]+))?/);
+        const match = line.match(/(?:"([^"]*)"|([^,]*))(?:,|$)(?:"([^"]*)"|([^,]*))?/);
         if (match) {
+          // Always return two columns, even if second is missing
           return [match[1] || match[2] || "", match[3] || match[4] || ""];
         }
         const parts = line.split(',');
+        if (parts.length === 1) return [parts[0] || "", ""];
         return [parts[0] || "", parts[1] || ""];
       });
-      <main class="wrap">
-        <header>
-          <h1 style="font-size:1.4rem;font-weight:700;margin-bottom:8px;">Developer log</h1>
-          <div class="intro" style="font-size:1rem;font-weight:400;margin-bottom:8px;">Latest fixes & issues.</div>
-        </header>
-        <div class="pill-toggle" style="display:flex;gap:12px;margin-bottom:18px;">
-          <button id="showFixes" class="pill active" type="button">Latest fixes</button>
-          <button id="showIssues" class="pill" type="button">Known issues</button>
-        </div>
-        <section id="fixes-section">
-          <ul id="fixes-list"></ul>
-        </section>
-        <section id="issues-section" style="display:none;">
-          <ul id="issues-list"></ul>
-        </section>
-      </main>
-      <script>
-      // Hamburger menu logic
-      document.addEventListener('DOMContentLoaded', function() {
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const navLinks = document.getElementById('navLinks');
-        function closeMenu() {
+      return rows;
+    }
+    // Hamburger menu logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const navLinks = document.getElementById('navLinks');
+      function closeMenu() {
+        navLinks.classList.remove('open');
+      }
+      function checkWidth() {
+        if (window.innerWidth < 600) {
+          hamburgerBtn.style.display = 'flex';
+          closeMenu(); // Always close menu on resize to mobile
+        } else {
+          hamburgerBtn.style.display = 'none';
           navLinks.classList.remove('open');
         }
-        function checkWidth() {
-          if (window.innerWidth < 600) {
-            hamburgerBtn.style.display = 'flex';
-            closeMenu(); // Always close menu on resize to mobile
-          } else {
-            hamburgerBtn.style.display = 'none';
-            navLinks.classList.remove('open');
-          }
-        }
-        hamburgerBtn.addEventListener('click', function() {
-          navLinks.classList.toggle('open');
-        });
-        // Close menu when a nav link is clicked (mobile only)
-        navLinks.querySelectorAll('a').forEach(function(link) {
-          link.addEventListener('click', function() {
-            if (window.innerWidth < 600) {
-              closeMenu();
-            }
-          });
-        });
-        window.addEventListener('resize', checkWidth);
-        checkWidth(); // Ensure correct state on load
+      }
+      hamburgerBtn.addEventListener('click', function() {
+        navLinks.classList.toggle('open');
       });
-      // Existing dev log JS
-        // Simple CSV parser for two columns
-        function parseCSV(text) {
-          const lines = text.split(/\r?\n/).filter(l => l.trim().length);
-          const rows = lines.map(line => {
-            // Handle quoted fields and commas
-            const match = line.match(/(?:"([^"]*)"|([^,]+))(?:,|$)(?:"([^"]*)"|([^,]+))?/);
-            if (match) {
-              return [match[1] || match[2] || "", match[3] || match[4] || ""];
-            }
-            const parts = line.split(',');
-            return [parts[0] || "", parts[1] || ""];
-          });
-          return rows;
-        }
-        async function loadChangelog() {
-          try {
-            const res = await fetch('./data/changelog.csv?v=' + Date.now(), { cache: 'no-store' });
-            if (!res.ok) throw new Error('Failed to load changelog.csv');
-            const text = await res.text();
-            const rows = parseCSV(text);
-            if (!rows.length) return;
-            const fixesList = document.getElementById('fixes-list');
-            const issuesList = document.getElementById('issues-list');
-            fixesList.innerHTML = '';
-            issuesList.innerHTML = '';
-            // Skip header row and reverse order
-            const dataRows = rows.slice(1).reverse();
-            for (const [fix, issue] of dataRows) {
-              if (fix && fix.trim()) {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${fix}</strong>`;
-                fixesList.appendChild(li);
-              }
-              if (issue && issue.trim()) {
-                const li = document.createElement('li');
-                li.innerHTML = `<strong>${issue}</strong>`;
-                issuesList.appendChild(li);
-              }
-            }
-          } catch (err) {
-            console.error('Error loading changelog:', err);
+      // Close menu when a nav link is clicked (mobile only)
+      navLinks.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 600) {
+            closeMenu();
           }
+        });
+      });
+      window.addEventListener('resize', checkWidth);
+      checkWidth(); // Ensure correct state on load
+      // Dev log JS
+      async function loadChangelog() {
+        const fixesList = document.getElementById('fixes-list');
+        const issuesList = document.getElementById('issues-list');
+        fixesList.innerHTML = '<li style="color:#3498db;font-weight:600;">Prøver å laste changelog.csv ...</li>';
+        // Show fetch URL for debugging
+        fixesList.innerHTML += `<li style='color:#888;font-size:0.95em;'>Fetch URL: <code>${window.location.origin + '/data/changelog.csv'}</code></li>`;
+        try {
+          console.log('Attempting to fetch changelog.csv');
+          const res = await fetch('./data/changelog.csv?v=' + Date.now(), { cache: 'no-store' });
+          console.log('Fetch response:', res);
+          if (!res.ok) throw new Error('Failed to load changelog.csv: ' + res.status);
+          const text = await res.text();
+          console.log('Fetched text:', text);
+          // Show raw CSV response for debugging
+          fixesList.innerHTML += `<li style='color:#888;font-size:0.95em;'>Raw CSV:<br><pre style='white-space:pre-wrap;background:#222;color:#eee;padding:8px;border-radius:6px;'>${text.replace(/</g,'&lt;')}</pre></li>`;
+          const rows = parseCSV(text);
+          console.log('Parsed rows:', rows);
+          fixesList.innerHTML = '';
+          issuesList.innerHTML = '';
+          if (!rows.length || rows.length === 1) {
+            fixesList.innerHTML = '<li style="color:#e74c3c;font-weight:600;">Ingen endringer funnet i changelog.csv</li>';
+            return;
+          }
+          // Skip header row and reverse order
+          const dataRows = rows.slice(1).reverse();
+          let found = false;
+          for (const [fix, issue] of dataRows) {
+            if (fix && fix.trim()) {
+              const li = document.createElement('li');
+              li.innerHTML = `<strong>${fix}</strong>`;
+              fixesList.appendChild(li);
+              found = true;
+            }
+            if (issue && issue.trim()) {
+              const li = document.createElement('li');
+              li.innerHTML = `<strong>${issue}</strong>`;
+              issuesList.appendChild(li);
+              found = true;
+            }
+            // If only one column is present, still show it
+            if ((!fix || !fix.trim()) && issue && issue.trim()) {
+              found = true;
+            }
+            if ((!issue || !issue.trim()) && fix && fix.trim()) {
+              found = true;
+            }
+          }
+          if (!found) {
+            fixesList.innerHTML = '<li style="color:#e74c3c;font-weight:600;">Ingen endringer funnet i changelog.csv</li>';
+          }
+        } catch (err) {
+          console.error('Error loading changelog:', err);
+          fixesList.innerHTML = '<li style="color:#e74c3c;font-weight:600;">Kunne ikke laste changelog.csv: ' + err + '</li>';
         }
-        document.getElementById('showFixes').onclick = function() {
-          document.getElementById('fixes-section').style.display = '';
-          document.getElementById('issues-section').style.display = 'none';
-          this.classList.add('active');
-          document.getElementById('showIssues').classList.remove('active');
-        };
-        document.getElementById('showIssues').onclick = function() {
-          document.getElementById('fixes-section').style.display = 'none';
-          document.getElementById('issues-section').style.display = '';
-          this.classList.add('active');
-          document.getElementById('showFixes').classList.remove('active');
-        };
-        loadChangelog();
-      </script>
+      }
+      document.getElementById('showFixes').onclick = function() {
+        document.getElementById('fixes-section').style.display = '';
+        document.getElementById('issues-section').style.display = 'none';
+        this.classList.add('active');
+        document.getElementById('showIssues').classList.remove('active');
+      };
+      document.getElementById('showIssues').onclick = function() {
+        document.getElementById('fixes-section').style.display = 'none';
+        document.getElementById('issues-section').style.display = '';
+        this.classList.add('active');
+        document.getElementById('showFixes').classList.remove('active');
+      };
+      loadChangelog();
+    });
+  </script>
