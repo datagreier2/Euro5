@@ -14,7 +14,13 @@
         <img src="./Euro5_beta_logo.svg" alt="Euro5 logo" style="height:32px;width:auto;vertical-align:middle;">
       </a>
     </div>
-    <div class="nav-links">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Meny" style="display:none;">
+  <span></span>
+  <span></span>
+  <span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">hjem</a>
       <a href="om.html">om</a>
       <a href="hvorfor.html">hvorfor</a>
       <a href="dev.html">dev</a>
@@ -45,6 +51,36 @@
   </div>
 
   <script>
+  // Hamburger menu logic
+  document.addEventListener('DOMContentLoaded', function() {
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+    function closeMenu() {
+      navLinks.classList.remove('open');
+    }
+    function checkWidth() {
+      if (window.innerWidth < 600) {
+        hamburgerBtn.style.display = 'flex';
+        closeMenu(); // Always close menu on resize to mobile
+      } else {
+        hamburgerBtn.style.display = 'none';
+        navLinks.classList.remove('open');
+      }
+    }
+    hamburgerBtn.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+    // Close menu when a nav link is clicked (mobile only)
+    navLinks.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.innerWidth < 600) {
+          closeMenu();
+        }
+      });
+    });
+    window.addEventListener('resize', checkWidth);
+    checkWidth(); // Ensure correct state on load
+  });
   // Hide/Show top content logic
   document.addEventListener('DOMContentLoaded', function() {
     const topContent = document.getElementById('top-content');
