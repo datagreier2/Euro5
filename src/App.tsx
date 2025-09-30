@@ -5,6 +5,11 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Calendar, Filter, ExternalLink, Clock, Tag, Globe, BookOpen } from 'lucide-react';
 import { fetchCSV, CsvError } from './lib/fetchCsv';
 import type { WeeklyRow } from './types';
+import HeroSection from './components/HeroSection';
+import FiltersBar from './components/FiltersBar';
+import StoriesGrid from './components/StoriesGrid';
+import Pagination from './components/Pagination';
+
 
 interface NewsStory {
   id: string;
@@ -178,201 +183,33 @@ function App() {
             </div>
           </header>
 
-          {/* Hero Section */}
-          <section className="bg-slate-800 border-b border-slate-700">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-serif text-slate-100 mb-3 tracking-wide">Editor's Selection</h2>
-                <div className="w-24 h-px bg-amber-400 mx-auto mb-4"></div>
-                <p className="text-slate-400 font-light tracking-wide">The week's most significant developments</p>
-              </div>
+          {/* Hero */}
+<HeroSection heroStories={heroStories} />
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                {/* Main hero story */}
-                <div className="lg:col-span-2">
-                  <article className="group cursor-pointer border border-slate-700 bg-slate-850 hover:border-amber-600 transition-all duration-300">
-                    <div className="aspect-video overflow-hidden mb-6">
-                      <img
-                        src={heroStories[0]?.imageUrl}
-                        alt={heroStories[0]?.title}
-                        className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 filter brightness-75"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center space-x-6 text-sm text-slate-400 mb-4 font-light tracking-wide">
-                        <span className="flex items-center">
-                          <Tag className="w-4 h-4 mr-2" />
-                          {heroStories[0]?.category}
-                        </span>
-                        <span className="font-serif italic">{heroStories[0]?.source}</span>
-                        <span className="flex items-center">
-                          <Clock className="w-4 h-4 mr-2" />
-                          {heroStories[0]?.readTime} min
-                        </span>
-                      </div>
-                      <h3 className="text-3xl font-serif text-slate-100 mb-4 leading-tight group-hover:text-amber-400 transition-colors">
-                        {heroStories[0]?.title}
-                      </h3>
-                      <p className="text-slate-300 text-lg leading-relaxed font-light">
-                        {heroStories[0]?.excerpt}
-                      </p>
-                    </div>
-                  </article>
-                </div>
+{/* Filters */}
+<FiltersBar
+  searchTerm={searchTerm}
+  onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
+  categories={categories}
+  selectedCategory={selectedCategory}
+  onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
+  sources={sources}
+  selectedSource={selectedSource}
+  onSelectSource={(v) => { setSelectedSource(v); setCurrentPage(1); }}
+/>
 
-                {/* Secondary hero stories */}
-                <div className="space-y-8">
-                  {heroStories.slice(1, 5).map((story) => (
-                    <article key={story.id} className="group cursor-pointer border-b border-slate-700 pb-6 last:border-b-0">
-                      <div className="flex space-x-4">
-                        <div className="flex-shrink-0">
-                          <img
-                            src={story.imageUrl}
-                            alt={story.title}
-                            className="w-24 h-24 object-cover group-hover:scale-105 transition-transform duration-300 filter brightness-75"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-3 text-xs text-slate-400 mb-3 font-light tracking-wide">
-                            <span>{story.category}</span>
-                            <span>•</span>
-                            <span className="font-serif italic">{story.source}</span>
-                          </div>
-                          <h4 className="font-serif text-slate-100 text-lg leading-tight mb-3 group-hover:text-amber-400 transition-colors">
-                            {story.title}
-                          </h4>
-                          <p className="text-slate-400 text-sm line-clamp-2 font-light">
-                            {story.excerpt.substring(0, 100)}...
-                          </p>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+{/* Grid */}
+<StoriesGrid stories={currentStories} formatDate={formatDate} />
 
-          {/* Filters and Search */}
-          <section className="bg-slate-800 border-b border-slate-700">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <div className="flex flex-col sm:flex-row gap-6">
-                {/* Search */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Search intelligence..."
-                    value={searchTerm}
-                    onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-700 border border-slate-600 text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-light tracking-wide"
-                  />
-                </div>
+{/* Pagination */}
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPrev={() => setCurrentPage(p => Math.max(1, p - 1)))}
+  onNext={() => setCurrentPage(p => Math.min(totalPages, p + 1)))}
+  onJump={(page) => setCurrentPage(page)}
+/>
 
-                {/* Category Filter */}
-                <div className="relative">
-                  <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
-                    className="pl-12 pr-8 py-3 bg-slate-700 border border-slate-600 text-slate-100 focus:ring-2 focus:ring-amber-500 focus:border-transparent appearance-none min-w-40 font-light tracking-wide"
-                  >
-                    {categories.map(category => (
-                      <option key={category} value={category} className="bg-slate-700">{category}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Source Filter */}
-                <div className="relative">
-                  <select
-                    value={selectedSource}
-                    onChange={(e) => { setSelectedSource(e.target.value); setCurrentPage(1); }}
-                    className="pl-4 pr-8 py-3 bg-slate-700 border border-slate-600 text-slate-100 focus:ring-2 focus:ring-amber-500 focus:border-transparent appearance-none min-w-40 font-light tracking-wide"
-                  >
-                    {sources.map(source => (
-                      <option key={source} value={source} className="bg-slate-700">{source}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Regular Stories Grid */}
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="text-3xl font-serif text-slate-100 mb-2 tracking-wide">Weekly Briefing</h2>
-                <div className="w-16 h-px bg-amber-400"></div>
-              </div>
-              <span className="text-slate-400 font-light tracking-wide">{filteredStories.length} reports</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {currentStories.map((story) => (
-                <article key={story.id} className="bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 group cursor-pointer">
-                  <div className="aspect-video overflow-hidden">
-                    <img
-                      src={story.imageUrl}
-                      alt={story.title}
-                      className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 filter brightness-75"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center space-x-4 text-sm text-slate-400 mb-4 font-light tracking-wide">
-                      <span className="flex items-center">
-                        <Tag className="w-4 h-4 mr-2" />
-                        {story.category}
-                      </span>
-                      <span className="font-serif italic">{story.source}</span>
-                    </div>
-                    <h3 className="font-serif text-slate-100 text-xl mb-4 line-clamp-2 group-hover:text-amber-400 transition-colors leading-tight">
-                      {story.title}
-                    </h3>
-                    <p className="text-slate-400 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
-                      {story.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between text-xs text-slate-500 font-light tracking-wide">
-                      <span className="flex items-center">
-                        <Clock className="w-4 h-4 mr-2" />
-                        {story.readTime} min
-                      </span>
-                      <span className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {formatDate(story.publishedAt)}
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center space-x-3">
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-6 py-3 text-sm font-light text-slate-300 bg-slate-800 border border-slate-600 hover:border-amber-600 hover:text-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors tracking-wide"
-                >
-                  Previous
-                </button>
-
-                <div className="flex space-x-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-4 py-3 text-sm font-light tracking-wide transition-colors ${
-                        currentPage === page
-                          ? 'bg-amber-600 text-slate-900 border border-amber-600'
-                          : 'text-slate-300 bg-slate-800 border border-slate-600 hover:border-amber-600 hover:text-amber-400'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
                 </div>
 
                 <button
