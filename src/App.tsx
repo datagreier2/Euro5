@@ -1,3 +1,6 @@
+
+
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Calendar, Filter, ExternalLink, Clock, Tag, Globe, BookOpen } from 'lucide-react';
 import { fetchCSV, CsvError } from './lib/fetchCsv';
@@ -16,7 +19,8 @@ interface NewsStory {
 }
 
 /* ---------- helpers (outside component) ---------- */
-const CSV_URL = '/data/weekly.csv'; // adjust if needed
+const CSV_URL = `${import.meta.env.BASE_URL}data/weekly.csv`;
+
 const PLACEHOLDER_IMG =
   'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800';
 
@@ -39,17 +43,21 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     return db - da;
   });
 
-  return sorted.map((r, idx) => ({
-    id: r.id,
+  return sorted.map((r, idx) => {
+  // Build a stable id from link or title+published_iso
+  const stableId = r.link || `${r.title}-${r.published_iso ?? ''}`;
+  return {
+    id: stableId,
     title: r.title,
     excerpt: r.summary ?? '',
-    source: r.source,
+    source: r.source_name,            // <-- map source_name -> source (UI field)
     category: r.category,
     publishedAt: parseDateISO(r.published_iso),
-    imageUrl: PLACEHOLDER_IMG, // swap to a CSV column later if you have images
+    imageUrl: PLACEHOLDER_IMG,
     readTime: toReadTime(r.summary),
-    isHero: idx < 5, // first five are hero items
-  }));
+    isHero: idx < 5,
+  };
+});
 }
 
 function formatDate(dateString: string) {
