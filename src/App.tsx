@@ -9,19 +9,11 @@ import HeroSection from './components/HeroSection';
 import FiltersBar from './components/FiltersBar';
 import StoriesGrid from './components/StoriesGrid';
 import Pagination from './components/Pagination';
+import type { WeeklyRow, NewsStory } from './types';
+import type { NewsStory } from '../types';
 
 
-interface NewsStory {
-  id: string;
-  title: string;
-  excerpt: string;
-  source: string;
-  category: string;
-  publishedAt: string;     // ISO
-  imageUrl: string;
-  readTime: number;
-  isHero?: boolean;
-}
+
 
 /* ---------- helpers (outside component) ---------- */
 const CSV_URL = `${import.meta.env.BASE_URL}data/weekly.csv`;
