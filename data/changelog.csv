@@ -1,0 +1,19 @@
+Latest fixes,Known issues
+Improved categorisation using GPT 5 mini,Some of the sources fail to fetch
+Normalised sources to avoid bias toward rich streams,Categorisation not very precise
+Improved 'most debated' by crawling Reddit,German and Italian contents is somehow slipping in to main stream
+Improved source streams by adding sitemap fetching to fetch strategy,Sporadical bad rendering of special characters
+Added 'enrichment phase' to populate titles and summaries better,HTML is bad
+Expanded sources to 110 incuding more countries,Non-Scandi vs Scandi sources not weigthed properly. Bias toward UK in both.
+Normalised bias between eastern/western Europe,"""The week in 5"" logic still not working"
+Fixed item matchng between main stream and Reddit,"Push to Git still manual, must be automated"
+Cleaned summaries that included markup language and links,Costs racked up to a whopping 12kr/week. Need financial support.
+Replaced all LLM logic except in careogirasation step because it was better,No Swedish and Danish version.
+Connected to domain euro5.news,SEO in non-existant
+Improved speed and cost replacing GPT5 mini with GPT5 nano (identical results),No indication of latest update
+Added logic to avoid fetching English content from scandi sources,"Trasparency of sources: Sources considered by model exported in back end, need sources used"
+About and changelog pages created,Source diversity still too low. Needs priority in first sorting step
+"Improved sources for Sweden, Poland, Finland, France, Germany, Denmark, Baltics, Belgium / Brussels, Spain, Netherlands. Verifified core / general.",Quality measurement includes diversification bias. Diversification should be run in it's own logic step for clarity.
+Quality measurement now includes lexical logic to ensure topic diversity.,Quality measurement by topic score needs improvement
+"Quality measurement now includes diversification score for topic, region",Quality measurement should score better by nation/region
+Deduplication faster,Validate quality of new deduplication logic
