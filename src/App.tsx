@@ -182,12 +182,7 @@ function App() {
             </div>
           </header>
           {/* The 5 Articles Section */}
-          {the5Rows && (
-            <section className="max-w-3xl mx-auto px-4 py-10">
-              <h2 className="text-2xl font-serif mb-8 text-amber-400">The 5 Most Important Stories</h2>
-              <The5Articles articles={the5Rows} />
-            </section>
-          )}
+          {the5Rows && <The5Articles articles={the5Rows} />}
 
 
           {/* Filters */}
