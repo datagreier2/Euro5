@@ -18,7 +18,7 @@ export default function StoriesGrid({ stories, formatDate }: Props) {
         <span className="text-slate-400 font-light tracking-wide">{stories.length} reports</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8 mb-16">
+      <div className="bg-red-500 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8 mb-16">
         {stories.map((story) => (
           <article key={story.id} className="bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 group cursor-pointer">
             <div className="aspect-video overflow-hidden">
