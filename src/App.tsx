@@ -2,7 +2,8 @@
 
 
 import { useEffect, useMemo, useState } from 'react';
-import { Globe, ExternalLink, BookOpen } from 'lucide-react';
+import { ExternalLink, BookOpen } from 'lucide-react';
+import logoMark from '../media/svg/Euro5_E5n_Logo_2.svg';
 
 import { fetchCSV, fetchCSVWithSchema, CsvError } from './lib/fetchCsv';
 import { the5RowSchema, type The5Row } from './validation-the5';
@@ -219,7 +220,7 @@ function App() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-20">
                 <div className="flex items-center">
-                  <Globe className="w-8 h-8 text-amber-400 mr-3" />
+                  <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
                   <div>
                     <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
                     <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Europeiske nyheter</p>
@@ -272,7 +273,7 @@ function App() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div className="col-span-1 md:col-span-2">
                   <div className="flex items-center mb-6">
-                    <Globe className="w-8 h-8 text-amber-400 mr-3" />
+                    <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
                     <div>
                       <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">The Weekly</h3>
                       <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Intelligence Digest</p>
