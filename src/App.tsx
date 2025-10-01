@@ -28,16 +28,17 @@ const PLACEHOLDER_IMG =
   'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800';
 
 const CATEGORY_MASKS: Record<string, string> = {
-  'Utenriks uten USA': 'Utenriks',
-  'Næringsliv og nasjonaløkonomi': 'Økonomi',
-  'Mest debbatert': 'Debattert',
+  'utenriks uten usa': 'Utenriks',
+  'næringsliv og nasjonaløkonomi': 'Økonomi',
+  'mest debattert': 'Debattert',
 };
 
 function normalizeCategory(category?: string | null): string {
   if (!category) return '';
   const cleaned = category.trim();
   if (!cleaned) return '';
-  return CATEGORY_MASKS[cleaned] ?? cleaned;
+  const masked = CATEGORY_MASKS[cleaned.toLowerCase()];
+  return masked ?? cleaned;
 }
 
 function toReadTime(summary?: string | null): number {
