@@ -201,11 +201,11 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100">
       {/* quick guards */}
-      {loading && <div className="p-6 text-slate-200">Loading…</div>}
+      {loading && <div className="p-6 text-neutral-200">Loading…</div>}
       {error && !loading && (
-        <div className="m-6 p-4 bg-slate-800 border border-red-500 text-red-200">
+        <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
           <strong>Couldn’t load data</strong>
           <div className="mt-2 text-sm">{error}</div>
         </div>
@@ -215,24 +215,24 @@ function App() {
       {!loading && !error && (
         <>
           {/* Header */}
-          <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+          <header className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-20">
                 <div className="flex items-center">
                   <Globe className="w-8 h-8 text-amber-400 mr-3" />
                   <div>
-                    <h1 className="text-3xl font-serif text-slate-100 tracking-wide">Euro5</h1>
-                    <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Europeiske nyheter</p>
+                    <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
+                    <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Europeiske nyheter</p>
                   </div>
-                  <span className="ml-6 px-3 py-1 text-xs font-light bg-amber-900 text-amber-200 border border-amber-700">
+                  <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
                     {weekLabel || 'Week --'}
                   </span>
                 </div>
                 <nav className="hidden md:flex space-x-10">
-                  <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors font-light tracking-wide">This Week</a>
-                  <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors font-light tracking-wide">Archives</a>
-                  <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors font-light tracking-wide">Sources</a>
-                  <a href="#" className="text-slate-300 hover:text-amber-400 transition-colors font-light tracking-wide">About</a>
+                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">This Week</a>
+                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">Archives</a>
+                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">Sources</a>
+                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">About</a>
                 </nav>
               </div>
             </div>
@@ -267,29 +267,29 @@ function App() {
           />
 
           {/* Footer */}
-          <footer className="bg-slate-900 border-t border-slate-700">
+          <footer className="bg-neutral-950 border-t border-neutral-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div className="col-span-1 md:col-span-2">
                   <div className="flex items-center mb-6">
                     <Globe className="w-8 h-8 text-amber-400 mr-3" />
                     <div>
-                      <h3 className="text-2xl font-serif text-slate-100 tracking-wide">The Weekly</h3>
-                      <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Intelligence Digest</p>
+                      <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">The Weekly</h3>
+                      <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Intelligence Digest</p>
                     </div>
                   </div>
-                  <p className="text-slate-400 mb-6 font-light leading-relaxed">
+                  <p className="text-neutral-400 mb-6 font-light leading-relaxed">
                     A curated intelligence briefing from the world's finest publications. 
                     Thoughtfully assembled for the discerning reader who values depth over noise.
                   </p>
                   <div className="flex space-x-6">
-                    <ExternalLink className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
-                    <BookOpen className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
+                    <ExternalLink className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
+                    <BookOpen className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Navigation</h4>
-                  <ul className="space-y-3 text-slate-400 font-light">
+                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">Navigation</h4>
+                  <ul className="space-y-3 text-neutral-400 font-light">
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">This Week</a></li>
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Archives</a></li>
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Sources</a></li>
@@ -297,8 +297,8 @@ function App() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Briefings</h4>
-                  <ul className="space-y-3 text-slate-400 font-light">
+                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">Briefings</h4>
+                  <ul className="space-y-3 text-neutral-400 font-light">
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Technology</a></li>
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Business</a></li>
                     <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Science</a></li>
@@ -306,7 +306,7 @@ function App() {
                   </ul>
                 </div>
               </div>
-              <div className="border-t border-slate-700 mt-12 pt-8 text-center text-slate-500">
+              <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500">
                 <p className="font-light tracking-wide">&copy; 2025 The Weekly Intelligence Digest. All rights reserved.</p>
               </div>
             </div>

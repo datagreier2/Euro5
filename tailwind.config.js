@@ -7,7 +7,6 @@ export default {
         serif: ['"Source Serif 4"', 'serif'],
         sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui'],
       },
-      colors: { slate: { 850: '#1e293b' } },
       scale: { '102': '1.02' },
     },
   },
