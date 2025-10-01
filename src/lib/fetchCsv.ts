@@ -1,6 +1,6 @@
-// src/lib/fetchCsv.ts
 import Papa from 'papaparse';
-import { weeklyRowSchema } from '../validation';
+import { z, ZodSchema } from 'zod';
+import { weeklyRowSchema } from '../validation'; // your weekly schema
 import type { WeeklyRow } from '../types';
 
 const DEFAULT_TIMEOUT_MS = 15000;
@@ -12,7 +12,12 @@ export class CsvError extends Error {
   }
 }
 
-export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<WeeklyRow[]> {
+// Generic CSV + schema
+export async function fetchCSVWithSchema<T extends Record<string, unknown>>(
+  url: string,
+  schema: ZodSchema<T>,
+  timeoutMs = DEFAULT_TIMEOUT_MS
+): Promise<T[]> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -21,7 +26,8 @@ export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Pro
     res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
   } catch (err) {
     clearTimeout(timer);
-    if ((err as any)?.name === 'AbortError') throw new CsvError(`Timed out after ${timeoutMs / 1000}s fetching CSV.`, err);
+    if ((err as any)?.name === 'AbortError')
+      throw new CsvError(`Timed out after ${timeoutMs / 1000}s fetching CSV.`, err);
     throw new CsvError(`Network error: ${(err as Error).message}`, err);
   } finally {
     clearTimeout(timer);
@@ -32,7 +38,7 @@ export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Pro
   const text = await res.text();
   if (!text.trim()) return [];
 
-  const { data, errors, meta } = Papa.parse<WeeklyRow>(text, {
+  const { data, errors } = Papa.parse<Record<string, unknown>>(text, {
     header: true,
     skipEmptyLines: 'greedy',
     transformHeader: (h) => h.trim(),
@@ -44,37 +50,30 @@ export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Pro
     throw new CsvError(`CSV parse errors: ${preview}`);
   }
 
-  // Ensure required columns exist in the header row
-  const required = ['title', 'link', 'source_name', 'category'];
-  const cols = meta.fields || [];
-  const missing = required.filter(r => !cols.includes(r));
-  if (missing.length) {
-    throw new CsvError(`CSV is missing required columns: ${missing.join(', ')}`);
-  }
-
-  // Validate rows individually; keep valid ones, skip bad ones (graceful)
-  const valid: WeeklyRow[] = [];
-  let invalidCount = 0;
-  data.forEach((row, idx) => {
-    const parsed = weeklyRowSchema.safeParse(row);
-    if (parsed.success) {
-      valid.push(parsed.data);
-    } else {
-      invalidCount += 1;
-      // Optional: surface the first issue to console to help debugging during dev
-      if (invalidCount === 1) {
+  const valid: T[] = [];
+  let invalid = 0;
+  for (let i = 0; i < data.length; i++) {
+    const parsed = schema.safeParse(data[i]);
+    if (parsed.success) valid.push(parsed.data);
+    else {
+      invalid++;
+      if (invalid === 1) {
         const first = parsed.error.issues[0];
-        console.warn(`CSV row ${idx + 2} dropped: ${first?.path?.join('.') ?? 'unknown'} — ${first?.message}`);
+        console.warn(`CSV row ${i + 2} dropped: ${first?.path?.join('.') ?? 'unknown'} — ${first?.message}`);
       }
     }
-  });
+  }
 
   if (data.length > 0 && valid.length === 0) {
-    throw new CsvError(`CSV validation failed: 0/${data.length} valid rows. Check header names and row values.`);
+    throw new CsvError(`CSV validation failed: 0/${data.length} valid rows.`);
   }
-  if (invalidCount > 0) {
-    console.warn(`CSV: skipped ${invalidCount} invalid row(s), kept ${valid.length}.`);
-  }
+  if (invalid > 0) console.warn(`CSV: skipped ${invalid} invalid row(s), kept ${valid.length}.`);
 
   return valid;
 }
+
+// Existing weekly wrapper (still works)
+export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<WeeklyRow[]> {
+  return fetchCSVWithSchema<WeeklyRow>(url, weeklyRowSchema, timeoutMs);
+}
+
