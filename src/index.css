@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TEMP: debug that CSS is loading */
+body { outline: 4px solid magenta !important; }
