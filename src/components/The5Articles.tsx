@@ -1,5 +1,5 @@
 import type { The5Row } from '../validation-the5';
-import { ExternalLink, Newspaper, Tag } from 'lucide-react';
+import { ExternalLink, Newspaper } from 'lucide-react';
 
 interface The5ArticlesProps {
   articles: The5Row[];
@@ -14,7 +14,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-3xl font-serif text-slate-100 mb-2 tracking-wide">The 5 Spotlight</h2>
+          <h2 className="text-3xl font-serif text-slate-100 mb-2 tracking-wide">The 5</h2>
           <div className="w-16 h-px bg-amber-400" />
         </div>
         <span className="text-slate-400 font-light tracking-wide">{articles.length} briefings</span>
@@ -24,7 +24,6 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
         {articles.map((article, idx) => {
           const title = article.short_headline || article.title;
           const summary = article.summary?.trim();
-          const category = article.category || 'Insight';
           const sourceLabel = article.source_display || article.source_domain || 'Independent';
           const initial = (sourceLabel || title)?.trim().charAt(0)?.toUpperCase() || 'A';
           const hasLink = Boolean(article.link);
@@ -32,7 +31,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
           return (
             <article
               key={`${title}-${idx}`}
-              className={`w-[14rem] max-[511px]:w-full bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 flex flex-col ${
+              className={`w-[13.5rem] max-[511px]:w-full bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 flex flex-col ${
                 hasLink ? 'group cursor-pointer' : ''
               }`}
             >
@@ -42,11 +41,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                 </span>
               </div>
               <div className="p-6">
-                <div className="flex items-center space-x-4 text-sm text-slate-400 mb-4 font-light tracking-wide">
-                  <span className="flex items-center">
-                    <Tag className="w-4 h-4 mr-2" />
-                    {category}
-                  </span>
+                <div className="flex items-center text-sm text-slate-400 mb-4 font-light tracking-wide">
                   <span className="flex items-center font-serif italic">
                     <Newspaper className="w-4 h-4 mr-2" />
                     {sourceLabel}

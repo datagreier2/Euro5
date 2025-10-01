@@ -3,4 +3,7 @@
 @tailwind utilities;
 
 /* TEMP: debug that CSS is loading */
-body { outline: 4px solid magenta !important; }
+body {
+  @apply font-sans;
+  outline: 4px solid magenta !important;
+}

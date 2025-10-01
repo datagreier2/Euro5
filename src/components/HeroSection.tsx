@@ -1,4 +1,4 @@
-import { Clock, Tag } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import type { NewsStory } from '../types';
 
 type Props = { heroStories: NewsStory[] };
@@ -29,10 +29,6 @@ export default function HeroSection({ heroStories }: Props) {
               </div>
               <div className="p-6">
                 <div className="flex items-center space-x-6 text-sm text-slate-400 mb-4 font-light tracking-wide">
-                  <span className="flex items-center">
-                    <Tag className="w-4 h-4 mr-2" />
-                    {main.category}
-                  </span>
                   <span className="font-serif italic">{main.source}</span>
                   <span className="flex items-center">
                     <Clock className="w-4 h-4 mr-2" />
@@ -62,9 +58,7 @@ export default function HeroSection({ heroStories }: Props) {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-3 text-xs text-slate-400 mb-3 font-light tracking-wide">
-                      <span>{story.category}</span>
-                      <span>•</span>
+                    <div className="text-xs text-slate-400 mb-3 font-light tracking-wide">
                       <span className="font-serif italic">{story.source}</span>
                     </div>
                     <h4 className="font-serif text-slate-100 text-lg leading-tight mb-3 group-hover:text-amber-400 transition-colors">
@@ -83,4 +77,3 @@ export default function HeroSection({ heroStories }: Props) {
     </section>
   );
 }
-

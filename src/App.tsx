@@ -27,6 +27,19 @@ const THE5_CSV_URL   = `${import.meta.env.BASE_URL}data/the_5.csv`;
 const PLACEHOLDER_IMG =
   'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800';
 
+const CATEGORY_MASKS: Record<string, string> = {
+  'Utenriks uten USA': 'Utenriks',
+  'Næringsliv og nasjonaløkonomi': 'Økonomi',
+  'Mest debbatert': 'Debattert',
+};
+
+function normalizeCategory(category?: string | null): string {
+  if (!category) return '';
+  const cleaned = category.trim();
+  if (!cleaned) return '';
+  return CATEGORY_MASKS[cleaned] ?? cleaned;
+}
+
 function toReadTime(summary?: string | null): number {
   if (!summary) return 4;
   const words = summary.trim().split(/\s+/).length;
@@ -54,7 +67,7 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     title: r.title,
     excerpt: r.summary ?? '',
     source: r.source_name,            // <-- map source_name -> source (UI field)
-    category: r.category,
+    category: normalizeCategory(r.category),
     publishedAt: parseDateISO(r.published_iso),
     imageUrl: PLACEHOLDER_IMG,
     readTime: toReadTime(r.summary),
@@ -70,6 +83,40 @@ function formatDate(dateString: string) {
   });
 }
 
+function getISOWeekInfo(date: Date) {
+  const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNumber = target.getUTCDay() || 7;
+  target.setUTCDate(target.getUTCDate() + 4 - dayNumber);
+  const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1));
+  const week = Math.ceil(((target.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  return { week, year: target.getUTCFullYear() };
+}
+
+function computeWeekLabel(lastModifiedHeader: string | null, rows: WeeklyRow[]): string {
+  const candidates: Date[] = [];
+
+  if (lastModifiedHeader) {
+    const parsed = new Date(lastModifiedHeader);
+    if (!Number.isNaN(parsed.getTime())) candidates.push(parsed);
+  }
+
+  const fallbackDate = rows.reduce<Date | null>((latest, row) => {
+    if (!row.published_iso) return latest;
+    const parsed = new Date(row.published_iso);
+    if (Number.isNaN(parsed.getTime())) return latest;
+    if (!latest || parsed.getTime() > latest.getTime()) return parsed;
+    return latest;
+  }, null);
+
+  if (fallbackDate) candidates.push(fallbackDate);
+
+  const validDate = candidates.find(d => !Number.isNaN(d.getTime()));
+  if (!validDate) return '';
+
+  const { week } = getISOWeekInfo(validDate);
+  return `Week ${String(week).padStart(2, '0')}`;
+}
+
 /* ===================== COMPONENT ===================== */
 function App() {
   // data loading
@@ -77,6 +124,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [stories, setStories] = useState<NewsStory[]>([]);
   const [the5Rows, setThe5Rows] = useState<The5Row[] | null>(null);
+  const [weekLabel, setWeekLabel] = useState('');
 
 
 
@@ -94,14 +142,22 @@ function App() {
       setLoading(true);
       setError(null);
       try {
-        const [weekly, top5] = await Promise.all([
+        const [weekly, top5, weeklyHead] = await Promise.all([
           fetchCSV(WEEKLY_CSV_URL),                                  // validates with weeklyRowSchema
           fetchCSVWithSchema<The5Row>(THE5_CSV_URL, the5RowSchema),  // validates with the5RowSchema
+          fetch(WEEKLY_CSV_URL, { method: 'HEAD', cache: 'no-store' }).catch(() => null),
         ]);
+
+        const lastModifiedHeader = weeklyHead?.ok
+          ? weeklyHead.headers.get('last-modified')
+          : null;
+        const computedLabel = computeWeekLabel(lastModifiedHeader, weekly);
+
         if (!mounted) return;
 
         setStories(transformRowsToStories(weekly));
-        setThe5Rows(top5); // not used in UI yet; ready for future features
+        setThe5Rows(top5);
+        if (computedLabel) setWeekLabel(computedLabel);
         console.log('the_5.csv rows:', top5.length);
       } catch (err) {
         if (!mounted) return;
@@ -164,12 +220,11 @@ function App() {
                 <div className="flex items-center">
                   <Globe className="w-8 h-8 text-amber-400 mr-3" />
                   <div>
-                    <h1 className="text-3xl font-serif text-slate-100 tracking-wide">The Weekly</h1>
-                    <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Intelligence Digest</p>
+                    <h1 className="text-3xl font-serif text-slate-100 tracking-wide">Euro5</h1>
+                    <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Europeiske nyheter</p>
                   </div>
                   <span className="ml-6 px-3 py-1 text-xs font-light bg-amber-900 text-amber-200 border border-amber-700">
-                    {/* TODO: replace with dynamic week range if desired */}
-                    Week of Jan 15, 2025
+                    {weekLabel || 'Week --'}
                   </span>
                 </div>
                 <nav className="hidden md:flex space-x-10">

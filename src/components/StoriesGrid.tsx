@@ -1,4 +1,4 @@
-import { Calendar, Clock, Tag } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import type { NewsStory } from '../types';
 
 
@@ -22,7 +22,7 @@ export default function StoriesGrid({ stories, formatDate }: Props) {
         {stories.map((story) => (
           <article
             key={story.id}
-            className="w-[14rem] max-[511px]:w-full bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 group cursor-pointer flex flex-col"
+            className="w-[13.5rem] max-[511px]:w-full bg-slate-800 border border-slate-700 hover:border-amber-600 transition-all duration-300 group cursor-pointer flex flex-col"
           >
             <div className="aspect-video overflow-hidden">
               <img
@@ -32,11 +32,7 @@ export default function StoriesGrid({ stories, formatDate }: Props) {
               />
             </div>
             <div className="p-6">
-              <div className="flex items-center space-x-4 text-sm text-slate-400 mb-4 font-light tracking-wide">
-                <span className="flex items-center">
-                  <Tag className="w-4 h-4 mr-2" />
-                  {story.category}
-                </span>
+              <div className="text-sm text-slate-400 mb-4 font-light tracking-wide">
                 <span className="font-serif italic">{story.source}</span>
               </div>
               <h3 className="font-serif text-slate-100 text-xl mb-4 line-clamp-2 group-hover:text-amber-400 transition-colors leading-tight">
