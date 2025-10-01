@@ -8,7 +8,6 @@ import { fetchCSV, fetchCSVWithSchema, CsvError } from './lib/fetchCsv';
 import { the5RowSchema, type The5Row } from './validation-the5';
 import type { WeeklyRow, NewsStory } from './types';
 
-import HeroSection from './components/HeroSection';
 import FiltersBar from './components/FiltersBar';
 import StoriesGrid from './components/StoriesGrid';
 import Pagination from './components/Pagination';
@@ -47,7 +46,7 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     return db - da;
   });
 
-  return sorted.map((r, idx) => {
+  return sorted.map(r => {
   // Build a stable id from link or title+published_iso
   const stableId = r.link || `${r.title}-${r.published_iso ?? ''}`;
   return {
@@ -59,7 +58,6 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     publishedAt: parseDateISO(r.published_iso),
     imageUrl: PLACEHOLDER_IMG,
     readTime: toReadTime(r.summary),
-    isHero: idx < 5,
   };
 });
 }
@@ -90,30 +88,30 @@ function App() {
   const storiesPerPage = 12;
 
   // load CSV
- useEffect(() => {
-  let mounted = true;
-  (async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [weekly, top5] = await Promise.all([
-        fetchCSV(WEEKLY_CSV_URL),                                  // validates with weeklyRowSchema
-        fetchCSVWithSchema<The5Row>(THE5_CSV_URL, the5RowSchema),  // validates with the5RowSchema
-      ]);
-      if (!mounted) return;
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [weekly, top5] = await Promise.all([
+          fetchCSV(WEEKLY_CSV_URL),                                  // validates with weeklyRowSchema
+          fetchCSVWithSchema<The5Row>(THE5_CSV_URL, the5RowSchema),  // validates with the5RowSchema
+        ]);
+        if (!mounted) return;
 
-      setStories(transformRowsToStories(weekly));
-      setThe5Rows(top5); // not used in UI yet; ready for future features
-      console.log('the_5.csv rows:', top5.length);
-    } catch (err) {
-      if (!mounted) return;
-      setError(err instanceof CsvError ? err.message : 'Unknown error while loading CSV.');
-    } finally {
-      if (mounted) setLoading(false);
-    }
-  })();
-  return () => { mounted = false; };
-}, []);
+        setStories(transformRowsToStories(weekly));
+        setThe5Rows(top5); // not used in UI yet; ready for future features
+        console.log('the_5.csv rows:', top5.length);
+      } catch (err) {
+        if (!mounted) return;
+        setError(err instanceof CsvError ? err.message : 'Unknown error while loading CSV.');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
 
 
   // derived lists (from loaded stories)
@@ -127,14 +125,8 @@ function App() {
     return ['All', ...Array.from(set)];
   }, [stories]);
 
-  const heroStories = useMemo(
-    () => stories.filter(story => story.isHero),
-    [stories]
-  );
-
   const filteredStories = useMemo(() => {
     return stories.filter(story => {
-      if (story.isHero) return false; // exclude heroes from regular grid
       const q = searchTerm.toLowerCase();
       const matchesSearch =
         story.title.toLowerCase().includes(q) ||
@@ -189,88 +181,85 @@ function App() {
               </div>
             </div>
           </header>
-{/* The 5 Articles Section */}
-        {the5Rows && (
-          <section className="max-w-3xl mx-auto px-4 py-10">
-            <h2 className="text-2xl font-serif mb-8 text-amber-400">The 5 Most Important Stories</h2>
-            <The5Articles articles={the5Rows} />
-          </section>
-        )}
+          {/* The 5 Articles Section */}
+          {the5Rows && (
+            <section className="max-w-3xl mx-auto px-4 py-10">
+              <h2 className="text-2xl font-serif mb-8 text-amber-400">The 5 Most Important Stories</h2>
+              <The5Articles articles={the5Rows} />
+            </section>
+          )}
 
 
-          {/* Hero */}
-<HeroSection heroStories={heroStories} />
+          {/* Filters */}
+          <FiltersBar
+            searchTerm={searchTerm}
+            onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
+            sources={sources}
+            selectedSource={selectedSource}
+            onSelectSource={(v) => { setSelectedSource(v); setCurrentPage(1); }}
+          />
 
-{/* Filters */}
-<FiltersBar
-  searchTerm={searchTerm}
-  onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
-  categories={categories}
-  selectedCategory={selectedCategory}
-  onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
-  sources={sources}
-  selectedSource={selectedSource}
-  onSelectSource={(v) => { setSelectedSource(v); setCurrentPage(1); }}
-/>
-
-{/* Grid */}
-<StoriesGrid stories={currentStories} formatDate={formatDate} />
+          {/* Grid */}
+          <StoriesGrid stories={currentStories} formatDate={formatDate} />
 
 
-{/* Pagination */}
-<Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPrev={() => setCurrentPage(p => Math.max(1, p - 1))}
-  onNext={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-  onJump={(page) => setCurrentPage(page)}
-/>
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrev={() => setCurrentPage(p => Math.max(1, p - 1))}
+            onNext={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            onJump={(page) => setCurrentPage(page)}
+          />
 
-{/* Footer */}
-<footer className="bg-slate-900 border-t border-slate-700">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-      <div className="col-span-1 md:col-span-2">
-        <div className="flex items-center mb-6">
-          <Globe className="w-8 h-8 text-amber-400 mr-3" />
-          <div>
-            <h3 className="text-2xl font-serif text-slate-100 tracking-wide">The Weekly</h3>
-            <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Intelligence Digest</p>
-          </div>
-        </div>
-        <p className="text-slate-400 mb-6 font-light leading-relaxed">
-          A curated intelligence briefing from the world's finest publications. 
-          Thoughtfully assembled for the discerning reader who values depth over noise.
-        </p>
-        <div className="flex space-x-6">
-          <ExternalLink className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
-          <BookOpen className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
-        </div>
-      </div>
-      <div>
-        <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Navigation</h4>
-        <ul className="space-y-3 text-slate-400 font-light">
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">This Week</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Archives</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Sources</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">About</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Briefings</h4>
-        <ul className="space-y-3 text-slate-400 font-light">
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Technology</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Business</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Science</a></li>
-          <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Health</a></li>
-        </ul>
-      </div>
-    </div>
-    <div className="border-t border-slate-700 mt-12 pt-8 text-center text-slate-500">
-      <p className="font-light tracking-wide">&copy; 2025 The Weekly Intelligence Digest. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
+          {/* Footer */}
+          <footer className="bg-slate-900 border-t border-slate-700">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div className="col-span-1 md:col-span-2">
+                  <div className="flex items-center mb-6">
+                    <Globe className="w-8 h-8 text-amber-400 mr-3" />
+                    <div>
+                      <h3 className="text-2xl font-serif text-slate-100 tracking-wide">The Weekly</h3>
+                      <p className="text-xs text-slate-400 font-light tracking-widest uppercase">Intelligence Digest</p>
+                    </div>
+                  </div>
+                  <p className="text-slate-400 mb-6 font-light leading-relaxed">
+                    A curated intelligence briefing from the world's finest publications. 
+                    Thoughtfully assembled for the discerning reader who values depth over noise.
+                  </p>
+                  <div className="flex space-x-6">
+                    <ExternalLink className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
+                    <BookOpen className="w-5 h-5 text-slate-400 hover:text-amber-400 transition-colors cursor-pointer" />
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Navigation</h4>
+                  <ul className="space-y-3 text-slate-400 font-light">
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">This Week</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Archives</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Sources</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">About</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-serif text-slate-200 mb-6 tracking-wide">Briefings</h4>
+                  <ul className="space-y-3 text-slate-400 font-light">
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Technology</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Business</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Science</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Health</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="border-t border-slate-700 mt-12 pt-8 text-center text-slate-500">
+                <p className="font-light tracking-wide">&copy; 2025 The Weekly Intelligence Digest. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
         </>
       )}
     </div>

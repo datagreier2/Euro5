@@ -35,7 +35,6 @@ export interface NewsStory {
   publishedAt: string;   // normalized ISO string
   imageUrl: string;
   readTime: number;
-  isHero?: boolean;
 }
 
 export interface The5Row {
