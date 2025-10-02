@@ -42,7 +42,8 @@ export interface The5Row {
   title: string;               // full headline
   summary?: string | null;
   link: string;                // URL
-  source_display: string;      // e.g. "The Guardian"
-  source_domain: string;       // e.g. "theguardian.com"
+  source_display?: string;     // e.g. "The Guardian"
+  source_name?: string;        // canonical publisher name
+  source_domain?: string;      // e.g. "theguardian.com"
   category: string;            // your taxonomy
 }

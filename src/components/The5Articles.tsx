@@ -24,7 +24,8 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
         {articles.map((article, idx) => {
           const title = article.short_headline || article.title;
           const summary = article.summary?.trim();
-          const sourceLabel = article.source_display || article.source_domain || 'Independent';
+          const sourceLabel =
+            article.source_display || article.source_name || article.source_domain || 'Independent';
           const initial = (sourceLabel || title)?.trim().charAt(0)?.toUpperCase() || 'A';
           const hasLink = Boolean(article.link);
 

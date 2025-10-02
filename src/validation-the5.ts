@@ -6,6 +6,7 @@ export const the5RowSchema = z.object({
   summary: z.string().optional().nullable(),
   link: z.string().url().optional(),
   source_display: z.string().min(1).optional(),
+  source_name: z.string().min(1).optional(),
   source_domain: z.string().min(1).optional(),
   category: z.string().min(1).optional(),
   published_iso: z.string().optional(),
