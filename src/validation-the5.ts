@@ -9,6 +9,7 @@ export const the5RowSchema = z.object({
   source_name: z.string().min(1).optional(),
   source_domain: z.string().min(1).optional(),
   category: z.string().min(1).optional(),
+  country: z.string().optional().nullable(),
   published_iso: z.string().optional(),
   // Add any other fields your CSV provides here
 }).passthrough();

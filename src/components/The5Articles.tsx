@@ -2,6 +2,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { The5Row } from '../validation-the5';
 import { ChevronLeft, ChevronRight, ExternalLink, Newspaper } from 'lucide-react';
 
+const europeMapGraphics = import.meta.glob('../data/europe_map_graphics/*/vector.svg', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>;
+
+function resolveCountryGraphic(country?: string | null): string | null {
+  if (!country) return null;
+  const key = country.trim().toLowerCase();
+  if (!key) return null;
+  return europeMapGraphics[`../data/europe_map_graphics/${key}/vector.svg`] ?? null;
+}
+
 interface The5ArticlesProps {
   articles: The5Row[];
 }
@@ -126,6 +138,8 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
               const summary = article.summary?.trim();
               const sourceLabel =
                 article.source_name || article.source_display || article.source_domain || 'Independent';
+              const countryCode = article.country ? String(article.country).trim().toUpperCase() : '';
+              const countryGraphic = resolveCountryGraphic(countryCode);
               const initial = (sourceLabel || title)?.trim().charAt(0)?.toUpperCase() || 'A';
               const hasLink = Boolean(article.link);
 
@@ -137,10 +151,23 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                     hasLink ? 'group cursor-pointer' : ''
                   }`}
                 >
-                  <div className="aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
-                    <span className="text-4xl font-serif text-amber-400 select-none">
-                      {initial}
-                    </span>
+                  <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
+                    {countryGraphic ? (
+                      <img
+                        src={countryGraphic}
+                        alt={countryCode ? `${countryCode} map` : 'European map'}
+                        className="h-full w-full object-contain p-6 opacity-80"
+                      />
+                    ) : (
+                      <span className="text-4xl font-serif text-amber-400 select-none">
+                        {initial}
+                      </span>
+                    )}
+                    {countryCode && (
+                      <span className="absolute bottom-3 right-3 text-xs font-light uppercase tracking-[0.3em] text-neutral-400">
+                        {countryCode}
+                      </span>
+                    )}
                   </div>
                   <div className="p-6">
                     <div className="flex items-center text-sm text-neutral-400 mb-4 font-light tracking-wide">
