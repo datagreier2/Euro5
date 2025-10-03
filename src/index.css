@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/scrollbar.css';
+
 /* TEMP: debug that CSS is loading */
 body {
   @apply font-sans;
