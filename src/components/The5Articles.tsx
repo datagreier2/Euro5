@@ -25,7 +25,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
           const title = article.short_headline || article.title;
           const summary = article.summary?.trim();
           const sourceLabel =
-            article.source_display || article.source_name || article.source_domain || 'Independent';
+            article.source_name || article.source_display || article.source_domain || 'Independent';
           const initial = (sourceLabel || title)?.trim().charAt(0)?.toUpperCase() || 'A';
           const hasLink = Boolean(article.link);
 
@@ -48,7 +48,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                     {sourceLabel}
                   </span>
                 </div>
-                <h3 className="font-serif text-neutral-100 text-xl mb-4 line-clamp-2 leading-tight">
+                <h3 className="font-serif text-neutral-100 text-xl mb-4 leading-tight">
                   {hasLink ? (
                     <a
                       href={article.link}

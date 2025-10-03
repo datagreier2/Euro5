@@ -9,7 +9,6 @@ import { fetchCSV, fetchCSVWithSchema, CsvError } from './lib/fetchCsv';
 import { the5RowSchema, type The5Row } from './validation-the5';
 import type { WeeklyRow, NewsStory } from './types';
 
-import FiltersBar from './components/FiltersBar';
 import StoriesGrid from './components/StoriesGrid';
 import Pagination from './components/Pagination';
 
@@ -133,7 +132,6 @@ function App() {
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedSource, setSelectedSource] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const storiesPerPage = 12;
 
@@ -178,11 +176,6 @@ function App() {
     return ['All', ...Array.from(set)];
   }, [stories]);
 
-  const sources = useMemo(() => {
-    const set = new Set(stories.map(s => s.source).filter(Boolean));
-    return ['All', ...Array.from(set)];
-  }, [stories]);
-
   const filteredStories = useMemo(() => {
     return stories.filter(story => {
       const q = searchTerm.toLowerCase();
@@ -190,10 +183,9 @@ function App() {
         story.title.toLowerCase().includes(q) ||
         story.excerpt.toLowerCase().includes(q);
       const matchesCategory = selectedCategory === 'All' || story.category === selectedCategory;
-      const matchesSource = selectedSource === 'All' || story.source === selectedSource;
-      return matchesSearch && matchesCategory && matchesSource;
+      return matchesSearch && matchesCategory;
     });
-  }, [stories, searchTerm, selectedCategory, selectedSource]);
+  }, [stories, searchTerm, selectedCategory]);
 
   const totalPages = Math.ceil(filteredStories.length / storiesPerPage);
   const currentStories = filteredStories.slice(
@@ -242,20 +234,16 @@ function App() {
           {the5Rows && <The5Articles articles={the5Rows} />}
 
 
-          {/* Filters */}
-          <FiltersBar
+          {/* Grid */}
+          <StoriesGrid
+            stories={currentStories}
+            formatDate={formatDate}
             searchTerm={searchTerm}
             onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
-            sources={sources}
-            selectedSource={selectedSource}
-            onSelectSource={(v) => { setSelectedSource(v); setCurrentPage(1); }}
           />
-
-          {/* Grid */}
-          <StoriesGrid stories={currentStories} formatDate={formatDate} />
 
 
           {/* Pagination */}
