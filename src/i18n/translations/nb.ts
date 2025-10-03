@@ -20,7 +20,7 @@ export const nb = {
   sections: {
     the5: {
       title: 'Ukens 5',
-      countLabel: '{{count}} sammendrag',
+      countLabel: '{{count}} utvalgte',
     },
     nordic: {
       title: 'Fra Norden',
@@ -30,6 +30,28 @@ export const nb = {
       title: 'Ukentlig utvalg [BETA]',
       reportsCount: '{{count}} rapporter',
     },
+  },
+  aboutPage: {
+    heroTitle: 'Om Euro5',
+    heroSubtitle: 'Euro5 destillerer europeisk journalistikk til daglige innsiktsbrief for nordiske lesere.',
+    missionTitle: 'Vårt oppdrag',
+    missionBody: 'Vi løfter fram de fem viktigste sakene fra kontinentet hver morgen, tilfører nordisk kontekst og leverer en ukentlig etterretningsbrief til beslutningstakere.',
+    valuesTitle: 'Dette styrer oss',
+    values: {
+      rapidResponseTitle: 'Rask respons',
+      rapidResponseBody: 'Vi følger utviklingen i sanntid slik at briefene våre alltid er handlekraftige.',
+      curatedBriefingsTitle: 'Kuraterte brief',
+      curatedBriefingsBody: 'Hver utvalgte sak kvalitetssikres av redaktører med regional spisskompetanse.',
+      panEuropeanTitle: 'Paneuropeisk blikk',
+      panEuropeanBody: 'Vi oversetter lokale kilder til innsikt som er relevant i hele Norden.',
+      trustedSourcesTitle: 'Pålitelige kilder',
+      trustedSourcesBody: 'Vi samarbeider med ledende europeiske publikasjoner og verifiserer alle kilder.',
+    },
+    teamTitle: 'Redaksjonen',
+    teamBody: 'Euro5 produseres av et distribuert team av journalister, analytikere og oversettere i Oslo, København, Stockholm og Reykjavik.',
+    contactTitle: 'Kontakt oss',
+    contactBody: 'Ta kontakt for partnerskap, tips eller innspill til brief-listen.',
+    contactEmail: 'contact@euro5.news',
   },
   filters: {
     searchPlaceholder: 'Søk [BETA]',

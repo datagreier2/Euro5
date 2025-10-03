@@ -2,6 +2,7 @@
 
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { ExternalLink, BookOpen } from 'lucide-react';
 import logoMark from '../media/svg/Euro5_E5n_Logo_2.svg';
 
@@ -15,6 +16,7 @@ import Pagination from './components/Pagination';
 
 import The5Articles from './components/The5Articles';
 import NordicPicks from './components/NordicPicks';
+import AboutPage from './pages/About';
 import { Locale, useI18n } from './i18n';
 
 
@@ -30,6 +32,8 @@ const NORDIC_PICKS_CSV_URL = `${import.meta.env.BASE_URL}data/nordic_picks.csv`;
 
 const PLACEHOLDER_IMG =
   'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800';
+
+const getInitialRoute = () => (typeof window !== 'undefined' ? window.location.pathname || '/' : '/');
 
 const CATEGORY_MASKS: Record<string, string> = {
   'utenriks uten usa': 'Utenriks',
@@ -119,6 +123,33 @@ function computeWeekNumber(lastModifiedHeader: string | null, rows: WeeklyRow[])
 function App() {
   const { t, locale, setLocale, availableLocales } = useI18n();
 
+  const [route, setRoute] = useState<string>(() => getInitialRoute());
+  useEffect(() => {
+    const handlePop = () => {
+      setRoute(getInitialRoute());
+    };
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
+
+  const navigate = useCallback((path: string) => {
+    if (typeof window === 'undefined') return;
+    if (path === route) return;
+    window.history.pushState(null, '', path);
+    setRoute(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [route]);
+
+  const handleNav = useCallback((path: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    navigate(path);
+  }, [navigate]);
+
+  const isAboutRoute = route.startsWith('/about');
+
   // data loading
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -136,14 +167,18 @@ function App() {
   const storiesPerPage = 12;
 
   const formatDate = useCallback((dateString: string) => {
-    return new Date(dateString).toLocaleDateString(
-      locale === 'nb' ? 'nb-NO' : 'en-GB',
-      {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }
-    );
+    const localeForDate =
+      locale === 'nb' ? 'nb-NO'
+        : locale === 'nn' ? 'nn-NO'
+        : locale === 'da' ? 'da-DK'
+        : locale === 'sv' ? 'sv-SE'
+        : 'en-GB';
+
+    return new Date(dateString).toLocaleDateString(localeForDate, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
   }, [locale]);
 
   const weekBadgeLabel = weekNumber
@@ -152,6 +187,58 @@ function App() {
 
   const errorMessage = error === '__unknown__' ? t('errors.unknownCsv') : error;
   const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const localeLabel = useCallback((code: Locale) => (
+    `${code.slice(0, 1).toUpperCase()}${code.slice(1).toLowerCase()}`
+  ), []);
+  const navLinkClass = useCallback((active: boolean) => (
+    `text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide ${active ? 'text-amber-400' : ''}`
+  ), []);
+
+  const footer = (
+    <footer className="bg-neutral-950 border-t border-neutral-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center mb-6">
+              <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
+              <div>
+                <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">{t('footer.brandTitle')}</h3>
+                <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
+              </div>
+            </div>
+            <p className="text-neutral-400 mb-6 font-light leading-relaxed">
+              {t('footer.description')}
+            </p>
+            <div className="flex space-x-6">
+              <ExternalLink className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
+              <BookOpen className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
+            </div>
+          </div>
+          <div>
+            <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
+            <ul className="space-y-3 text-neutral-400 font-light">
+              <li><a href="/" onClick={handleNav('/')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
+              <li><a href="/about" onClick={handleNav('/about')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.about')}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
+            <ul className="space-y-3 text-neutral-400 font-light">
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
+              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500">
+          <p className="font-light tracking-wide">{t('footer.copyright', { year: currentYear })}</p>
+        </div>
+      </div>
+    </footer>
+  );
 
   // load CSV
   useEffect(() => {
@@ -215,126 +302,85 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      {/* quick guards */}
-      {loading && <div className="p-6 text-neutral-200">{t('common.loading')}</div>}
-      {error && !loading && (
+      <header className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center">
+              <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
+              <div>
+                <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
+                <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
+              </div>
+              {!isAboutRoute && (
+                <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
+                  {weekBadgeLabel}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-6">
+              <nav className="hidden md:flex space-x-10">
+                <a href="/" onClick={handleNav('/')} className={navLinkClass(route === '/' || route === '')}>{t('navigation.thisWeek')}</a>
+                <a href="#" className={navLinkClass(false)}>{t('navigation.archives')}</a>
+                <a href="#" className={navLinkClass(false)}>{t('navigation.sources')}</a>
+                <a href="/about" onClick={handleNav('/about')} className={navLinkClass(isAboutRoute)}>{t('navigation.about')}</a>
+              </nav>
+              <select
+                value={locale}
+                onChange={(event) => setLocale(event.target.value as Locale)}
+                className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              >
+                {availableLocales.map(code => (
+                  <option key={code} value={code} className="bg-neutral-900">
+                    {localeLabel(code)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {!isAboutRoute && loading && (
+        <div className="p-6 text-neutral-200">{t('common.loading')}</div>
+      )}
+
+      {!isAboutRoute && error && !loading && (
         <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
           <strong>{t('errors.loadDataTitle')}</strong>
           <div className="mt-2 text-sm">{errorMessage}</div>
         </div>
       )}
 
-      {/* only render main content if not loading/error */}
-      {!loading && !error && (
-        <>
-          {/* Header */}
-          <header className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-20">
-                <div className="flex items-center">
-                  <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
-                  <div>
-                    <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
-                    <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
-                  </div>
-                  <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
-                    {weekBadgeLabel}
-                  </span>
-                </div>
-                <div className="flex items-center gap-6">
-                  <nav className="hidden md:flex space-x-10">
-                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.thisWeek')}</a>
-                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.archives')}</a>
-                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.sources')}</a>
-                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.about')}</a>
-                  </nav>
-                  <select
-                    value={locale}
-                    onChange={(event) => setLocale(event.target.value as Locale)}
-                    className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                  >
-                    {availableLocales.map(code => (
-                      <option key={code} value={code} className="bg-neutral-900">
-                        {t(`locales.${code}`)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </header>
-          {/* The 5 Articles Section */}
-          {the5Rows && <The5Articles articles={the5Rows} />}
-          {nordicPicks && <NordicPicks picks={nordicPicks} />}
+      {isAboutRoute ? (
+        <AboutPage />
+      ) : (
+        !loading && !error && (
+          <>
+            {the5Rows && <The5Articles articles={the5Rows} />}
+            {nordicPicks && <NordicPicks picks={nordicPicks} />}
 
+            <StoriesGrid
+              stories={currentStories}
+              formatDate={formatDate}
+              searchTerm={searchTerm}
+              onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
+            />
 
-          {/* Grid */}
-          <StoriesGrid
-            stories={currentStories}
-            formatDate={formatDate}
-            searchTerm={searchTerm}
-            onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}
-          />
-
-
-          {/* Pagination */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPrev={() => setCurrentPage(p => Math.max(1, p - 1))}
-            onNext={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            onJump={(page) => setCurrentPage(page)}
-          />
-
-          {/* Footer */}
-          <footer className="bg-neutral-950 border-t border-neutral-800">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-                <div className="col-span-1 md:col-span-2">
-                  <div className="flex items-center mb-6">
-                    <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
-                    <div>
-                      <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">{t('footer.brandTitle')}</h3>
-                      <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
-                    </div>
-                  </div>
-                  <p className="text-neutral-400 mb-6 font-light leading-relaxed">
-                    {t('footer.description')}
-                  </p>
-                  <div className="flex space-x-6">
-                    <ExternalLink className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
-                    <BookOpen className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
-                  <ul className="space-y-3 text-neutral-400 font-light">
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.about')}</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
-                  <ul className="space-y-3 text-neutral-400 font-light">
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500">
-                <p className="font-light tracking-wide">{t('footer.copyright', { year: currentYear })}</p>
-              </div>
-            </div>
-          </footer>
-        </>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPrev={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onNext={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onJump={(page) => setCurrentPage(page)}
+            />
+          </>
+        )
       )}
+
+      {footer}
     </div>
   );
 }
