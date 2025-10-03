@@ -16,6 +16,7 @@ export const da = {
     archives: 'Arkiv',
     sources: 'Kilder',
     about: 'Om',
+    dev: 'Udvikling',
   },
   sections: {
     the5: {
@@ -52,6 +53,16 @@ export const da = {
     contactTitle: 'Kontakt os',
     contactBody: 'Skriv for partnerskaber, tips eller for at komme på briefing-listen.',
     contactEmail: 'contact@euro5.news',
+  },
+  devPage: {
+    title: 'Udviklingslog',
+    subtitle: 'Interne noter om forbedringer og kendte problemer.',
+    loading: 'Indlæser ændringslog…',
+    errorTitle: 'Kunne ikke indlæse ændringslog',
+    commitsHeading: 'Seneste commits',
+    issuesHeading: 'Kendte problemer',
+    emptyState: 'Ingen poster registreret endnu.',
+    noEntry: '—',
   },
   filters: {
     searchPlaceholder: 'Søg i indsigter…',

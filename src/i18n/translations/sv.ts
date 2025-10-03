@@ -16,6 +16,7 @@ export const sv = {
     archives: 'Arkiv',
     sources: 'Källor',
     about: 'Om',
+    dev: 'Utveckling',
   },
   sections: {
     the5: {
@@ -52,6 +53,16 @@ export const sv = {
     contactTitle: 'Kontakta oss',
     contactBody: 'Hör av dig för partnerskap, tips eller för att få briefingen i inkorgen.',
     contactEmail: 'contact@euro5.news',
+  },
+  devPage: {
+    title: 'Utvecklingslogg',
+    subtitle: 'Interna anteckningar om förbättringar och kända problem.',
+    loading: 'Laddar ändringslogg…',
+    errorTitle: 'Kunde inte läsa in ändringsloggen',
+    commitsHeading: 'Senaste commits',
+    issuesHeading: 'Kända problem',
+    emptyState: 'Inga poster registrerade ännu.',
+    noEntry: '—',
   },
   filters: {
     searchPlaceholder: 'Sök i insikter…',

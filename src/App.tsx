@@ -17,6 +17,7 @@ import Pagination from './components/Pagination';
 import The5Articles from './components/The5Articles';
 import NordicPicks from './components/NordicPicks';
 import AboutPage from './pages/About';
+import DevPage from './pages/Dev';
 import { Locale, useI18n } from './i18n';
 
 
@@ -149,6 +150,7 @@ function App() {
   }, [navigate]);
 
   const isAboutRoute = route.startsWith('/about');
+  const isDevRoute = route.startsWith('/dev');
 
   // data loading
   const [loading, setLoading] = useState(true);
@@ -220,6 +222,7 @@ function App() {
               <li><a href="/" onClick={handleNav('/')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
               <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
               <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
+              <li><a href="/dev" onClick={handleNav('/dev')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.dev')}</a></li>
               <li><a href="/about" onClick={handleNav('/about')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.about')}</a></li>
             </ul>
           </div>
@@ -311,7 +314,7 @@ function App() {
                 <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
                 <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
               </div>
-              {!isAboutRoute && (
+              {!isAboutRoute && !isDevRoute && (
                 <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
                   {weekBadgeLabel}
                 </span>
@@ -322,6 +325,7 @@ function App() {
                 <a href="/" onClick={handleNav('/')} className={navLinkClass(route === '/' || route === '')}>{t('navigation.thisWeek')}</a>
                 <a href="#" className={navLinkClass(false)}>{t('navigation.archives')}</a>
                 <a href="#" className={navLinkClass(false)}>{t('navigation.sources')}</a>
+                <a href="/dev" onClick={handleNav('/dev')} className={navLinkClass(isDevRoute)}>{t('navigation.dev')}</a>
                 <a href="/about" onClick={handleNav('/about')} className={navLinkClass(isAboutRoute)}>{t('navigation.about')}</a>
               </nav>
               <select
@@ -340,18 +344,20 @@ function App() {
         </div>
       </header>
 
-      {!isAboutRoute && loading && (
+      {!isAboutRoute && !isDevRoute && loading && (
         <div className="p-6 text-neutral-200">{t('common.loading')}</div>
       )}
 
-      {!isAboutRoute && error && !loading && (
+      {!isAboutRoute && !isDevRoute && error && !loading && (
         <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
           <strong>{t('errors.loadDataTitle')}</strong>
           <div className="mt-2 text-sm">{errorMessage}</div>
         </div>
       )}
 
-      {isAboutRoute ? (
+      {isDevRoute ? (
+        <DevPage />
+      ) : isAboutRoute ? (
         <AboutPage />
       ) : (
         !loading && !error && (

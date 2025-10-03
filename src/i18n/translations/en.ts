@@ -16,6 +16,7 @@ export const en = {
     archives: 'Archives',
     sources: 'Sources',
     about: 'About',
+    dev: 'Dev',
   },
   sections: {
     the5: {
@@ -52,6 +53,16 @@ export const en = {
     contactTitle: 'Get in touch',
     contactBody: 'Reach the desk for partnerships, tips, or to join the briefing list.',
     contactEmail: 'contact@euro5.news',
+  },
+  devPage: {
+    title: 'Development changelog',
+    subtitle: 'Internal notes on platform improvements and outstanding work.',
+    loading: 'Loading changelog…',
+    errorTitle: 'Couldn’t load changelog',
+    commitsHeading: 'Latest commits',
+    issuesHeading: 'Known issues',
+    emptyState: 'No entries recorded yet.',
+    noEntry: '—',
   },
   filters: {
     searchPlaceholder: 'Search intelligence…',

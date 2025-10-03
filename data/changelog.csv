@@ -1,4 +1,4 @@
-Latest fixes,Known issues
+Latest commits,Known issues
 Improved categorisation using GPT 5 mini,Some of the sources fail to fetch
 Normalised sources to avoid bias toward rich streams,Categorisation not very precise
 Improved 'most debated' by crawling Reddit,German and Italian contents is somehow slipping in to main stream
@@ -17,3 +17,14 @@ About and changelog pages created,Source diversity still too low. Needs priority
 Quality measurement now includes lexical logic to ensure topic diversity.,Quality measurement by topic score needs improvement
 "Quality measurement now includes diversification score for topic, region",Quality measurement should score better by nation/region
 Deduplication faster,Validate quality of new deduplication logic
+"Avoid Trump in ""the 5"" at all costs",Debate article matching simplified but may be simplified too much. Validate several outputs to ensure quality.
+"Create logic for picking ""the 5""","Implement ""the 5"" front end"
+Improved backend stability,"Fetch svg logos for ""the 5"" from sources at runtime."
+Improved selection bias scoring,Changelog not displaying card text properly
+"Refactored to slower but better source, country, category diversity logic.",Frontend doesn't have a proper stack
+Increased penalty for category repetition - better diversity of categories,Improve UI
+Major front end update,Automate posts for SoMe
+Added multi language support,Quality measurement step has 'random' rule. Improve quality scoring to avoid random deletions.
+,Reddit article match not very reliable
+,Subreddits need review
+,"Huge negative bias for Trump articles. This is to avoid domination due to quantity of Trump stories in fetching, but must be adressed in the future."

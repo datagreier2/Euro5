@@ -16,6 +16,7 @@ export const nn = {
     archives: 'Arkiv',
     sources: 'Kjelder',
     about: 'Om',
+    dev: 'Utvikling',
   },
   sections: {
     the5: {
@@ -52,6 +53,16 @@ export const nn = {
     contactTitle: 'Kontakt oss',
     contactBody: 'Ta kontakt for samarbeid, tips eller for å bli med på distribusjonslista.',
     contactEmail: 'contact@euro5.news',
+  },
+  devPage: {
+    title: 'Utviklingslogg',
+    subtitle: 'Interne notat om forbetringar og kjende problem.',
+    loading: 'Lastar endringslogg…',
+    errorTitle: 'Klarte ikkje laste endringslogg',
+    commitsHeading: 'Siste endringar',
+    issuesHeading: 'Kjende feil',
+    emptyState: 'Ingen oppføringar lagt inn endå.',
+    noEntry: '—',
   },
   filters: {
     searchPlaceholder: 'Søk i innsiktar…',
