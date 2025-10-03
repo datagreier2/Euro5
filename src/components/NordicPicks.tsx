@@ -101,7 +101,6 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
 
   useEffect(() => {
     if (!picks.length) return;
-    cardsRef.current = Array.from({ length: picks.length });
     setActiveIndex(0);
     const id = window.requestAnimationFrame(() => scrollToIndex(0, 'auto'));
     return () => window.cancelAnimationFrame(id);
