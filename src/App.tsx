@@ -309,11 +309,17 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center">
-              <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
-              <div>
-                <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
-                <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
-              </div>
+              <a
+                href="/"
+                onClick={handleNav('/')}
+                className="flex items-center no-underline focus:outline-none"
+              >
+                <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
+                <div>
+                  <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
+                  <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
+                </div>
+              </a>
               {!isAboutRoute && !isDevRoute && (
                 <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
                   {weekBadgeLabel}
