@@ -2,11 +2,18 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';          // <-- this import is essential
-import { I18nProvider } from './i18n';
+import { I18nProvider, Locale } from './i18n';
 
-const defaultLocale = typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('nb')
-  ? 'nb'
-  : 'en';
+function detectLocale(): Locale {
+  if (typeof navigator === 'undefined') return 'en';
+  const lang = navigator.language.toLowerCase();
+  if (lang.startsWith('nb') || lang.startsWith('no')) return 'nb';
+  if (lang.startsWith('da')) return 'da';
+  if (lang.startsWith('sv')) return 'sv';
+  return 'en';
+}
+
+const defaultLocale = detectLocale();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

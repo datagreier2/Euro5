@@ -1,12 +1,16 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { en } from './translations/en';
 import { nb } from './translations/nb';
+import { da } from './translations/da';
+import { sv } from './translations/sv';
 
 type TranslationShape = typeof en;
 
 const translations = {
   en,
   nb,
+  da,
+  sv,
 } as const;
 
 export type Locale = keyof typeof translations;
