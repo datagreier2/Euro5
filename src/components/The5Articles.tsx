@@ -140,7 +140,6 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                 article.source_name || article.source_display || article.source_domain || 'Independent';
               const countryCode = article.country ? String(article.country).trim().toUpperCase() : '';
               const countryGraphic = resolveCountryGraphic(countryCode);
-              const initial = (sourceLabel || title)?.trim().charAt(0)?.toUpperCase() || 'A';
               const hasLink = Boolean(article.link);
 
               return (
@@ -152,16 +151,12 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                   }`}
                 >
                   <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
-                    {countryGraphic ? (
+                    {countryGraphic && (
                       <img
                         src={countryGraphic}
                         alt={countryCode ? `${countryCode} map` : 'European map'}
                         className="h-full w-full object-contain p-6 opacity-80"
                       />
-                    ) : (
-                      <span className="text-4xl font-serif text-amber-400 select-none">
-                        {initial}
-                      </span>
                     )}
                     {countryCode && (
                       <span className="absolute bottom-3 right-3 text-xs font-light uppercase tracking-[0.3em] text-neutral-400">
