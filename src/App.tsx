@@ -322,9 +322,6 @@ function App() {
             </div>
             <div className="flex items-center gap-6">
               <nav className="hidden md:flex space-x-10">
-                <a href="/" onClick={handleNav('/')} className={navLinkClass(route === '/' || route === '')}>{t('navigation.thisWeek')}</a>
-                <a href="#" className={navLinkClass(false)}>{t('navigation.archives')}</a>
-                <a href="#" className={navLinkClass(false)}>{t('navigation.sources')}</a>
                 <a href="/dev" onClick={handleNav('/dev')} className={navLinkClass(isDevRoute)}>{t('navigation.dev')}</a>
                 <a href="/about" onClick={handleNav('/about')} className={navLinkClass(isAboutRoute)}>{t('navigation.about')}</a>
               </nav>
