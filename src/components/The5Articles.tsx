@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { The5Row } from '../validation-the5';
 import { ChevronLeft, ChevronRight, ExternalLink, Newspaper } from 'lucide-react';
 
-const europeMapGraphics = import.meta.glob('../data/europe_map_graphics/*/vector.svg', {
+const europeMapGraphics = import.meta.glob('../../data/europe_map_graphics/*/vector.svg', {
   eager: true,
   import: 'default',
 }) as Record<string, string>;
@@ -11,7 +11,7 @@ function resolveCountryGraphic(country?: string | null): string | null {
   if (!country) return null;
   const key = country.trim().toLowerCase();
   if (!key) return null;
-  return europeMapGraphics[`../data/europe_map_graphics/${key}/vector.svg`] ?? null;
+  return europeMapGraphics[`../../data/europe_map_graphics/${key}/vector.svg`] ?? null;
 }
 
 interface The5ArticlesProps {
