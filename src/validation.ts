@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const weeklyRowSchema = z.object({
   category: z.string().min(1),
-  subgroup: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
 
   source_name: z.string().min(1),
   source_url: z.string().url().optional().nullable(),

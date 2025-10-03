@@ -69,6 +69,7 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     excerpt: r.summary ?? '',
     source: r.source_name,            // <-- map source_name -> source (UI field)
     category: normalizeCategory(r.category),
+    country: r.country ?? (typeof r.country_infer === 'string' ? r.country_infer : null),
     publishedAt: parseDateISO(r.published_iso),
     imageUrl: PLACEHOLDER_IMG,
     readTime: toReadTime(r.summary),

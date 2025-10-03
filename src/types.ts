@@ -1,7 +1,7 @@
 // Raw shape straight from your CSV file
 export interface WeeklyRow {
   category: string;
-  subgroup?: string | null;
+  country?: string | null;
 
   source_name: string;
   source_url?: string | null;
@@ -32,6 +32,7 @@ export interface NewsStory {
   excerpt: string;
   source: string;
   category: string;
+  country?: string | null;
   publishedAt: string;   // normalized ISO string
   imageUrl: string;
   readTime: number;
