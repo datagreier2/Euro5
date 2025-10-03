@@ -1,6 +1,7 @@
 import { Calendar, Clock } from 'lucide-react';
 import FiltersBar from './FiltersBar';
 import type { NewsStory } from '../types';
+import { useI18n } from '../i18n';
 
 
 type Props = {
@@ -22,14 +23,18 @@ export default function StoriesGrid({
   selectedCategory,
   onSelectCategory,
 }: Props) {
+  const { t } = useI18n();
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">Weekly Briefing [BETA]</h2>
+          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">{t('sections.weekly.title')}</h2>
           <div className="w-16 h-px bg-amber-400"></div>
         </div>
-        <span className="text-neutral-400 font-light tracking-wide">{stories.length} reports</span>
+        <span className="text-neutral-400 font-light tracking-wide">
+          {t('sections.weekly.reportsCount', { count: stories.length })}
+        </span>
       </div>
 
       <div className="mb-12 flex justify-start">
@@ -61,7 +66,7 @@ export default function StoriesGrid({
               <div className="flex items-center justify-between text-xs text-neutral-500 font-light tracking-wide">
                 <span className="flex items-center">
                   <Clock className="w-4 h-4 mr-2" />
-                  {story.readTime} min
+                  {t('cards.readMinutes', { minutes: story.readTime })}
                 </span>
                 <span className="flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />

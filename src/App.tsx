@@ -1,7 +1,7 @@
 
 
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ExternalLink, BookOpen } from 'lucide-react';
 import logoMark from '../media/svg/Euro5_E5n_Logo_2.svg';
 
@@ -15,6 +15,7 @@ import Pagination from './components/Pagination';
 
 import The5Articles from './components/The5Articles';
 import NordicPicks from './components/NordicPicks';
+import { Locale, useI18n } from './i18n';
 
 
 
@@ -80,14 +81,6 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
 });
 }
 
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
 function getISOWeekInfo(date: Date) {
   const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   const dayNumber = target.getUTCDay() || 7;
@@ -97,7 +90,7 @@ function getISOWeekInfo(date: Date) {
   return { week, year: target.getUTCFullYear() };
 }
 
-function computeWeekLabel(lastModifiedHeader: string | null, rows: WeeklyRow[]): string {
+function computeWeekNumber(lastModifiedHeader: string | null, rows: WeeklyRow[]): string {
   const candidates: Date[] = [];
 
   if (lastModifiedHeader) {
@@ -119,17 +112,19 @@ function computeWeekLabel(lastModifiedHeader: string | null, rows: WeeklyRow[]):
   if (!validDate) return '';
 
   const { week } = getISOWeekInfo(validDate);
-  return `Week ${String(week).padStart(2, '0')}`;
+  return String(week).padStart(2, '0');
 }
 
 /* ===================== COMPONENT ===================== */
 function App() {
+  const { t, locale, setLocale, availableLocales } = useI18n();
+
   // data loading
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stories, setStories] = useState<NewsStory[]>([]);
   const [the5Rows, setThe5Rows] = useState<The5Row[] | null>(null);
-  const [weekLabel, setWeekLabel] = useState('');
+  const [weekNumber, setWeekNumber] = useState('');
   const [nordicPicks, setNordicPicks] = useState<NordicPickRow[] | null>(null);
 
 
@@ -139,6 +134,24 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const storiesPerPage = 12;
+
+  const formatDate = useCallback((dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === 'nb' ? 'nb-NO' : 'en-GB',
+      {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }
+    );
+  }, [locale]);
+
+  const weekBadgeLabel = weekNumber
+    ? t('header.weekLabel', { week: weekNumber })
+    : t('header.weekFallback');
+
+  const errorMessage = error === '__unknown__' ? t('errors.unknownCsv') : error;
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   // load CSV
   useEffect(() => {
@@ -157,18 +170,18 @@ function App() {
         const lastModifiedHeader = weeklyHead?.ok
           ? weeklyHead.headers.get('last-modified')
           : null;
-        const computedLabel = computeWeekLabel(lastModifiedHeader, weekly);
+        const computedLabel = computeWeekNumber(lastModifiedHeader, weekly);
 
         if (!mounted) return;
 
         setStories(transformRowsToStories(weekly));
         setThe5Rows(top5);
         setNordicPicks(nordic);
-        if (computedLabel) setWeekLabel(computedLabel);
+        if (computedLabel) setWeekNumber(computedLabel);
         console.log('the_5.csv rows:', top5.length);
       } catch (err) {
         if (!mounted) return;
-        setError(err instanceof CsvError ? err.message : 'Unknown error while loading CSV.');
+        setError(err instanceof CsvError ? err.message : '__unknown__');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -203,11 +216,11 @@ function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
       {/* quick guards */}
-      {loading && <div className="p-6 text-neutral-200">Loading…</div>}
+      {loading && <div className="p-6 text-neutral-200">{t('common.loading')}</div>}
       {error && !loading && (
         <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
-          <strong>Couldn’t load data</strong>
-          <div className="mt-2 text-sm">{error}</div>
+          <strong>{t('errors.loadDataTitle')}</strong>
+          <div className="mt-2 text-sm">{errorMessage}</div>
         </div>
       )}
 
@@ -222,18 +235,31 @@ function App() {
                   <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
                   <div>
                     <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
-                    <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Europeiske nyheter</p>
+                    <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
                   </div>
                   <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
-                    {weekLabel || 'Week --'}
+                    {weekBadgeLabel}
                   </span>
                 </div>
-                <nav className="hidden md:flex space-x-10">
-                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">This Week</a>
-                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">Archives</a>
-                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">Sources</a>
-                  <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">About</a>
-                </nav>
+                <div className="flex items-center gap-6">
+                  <nav className="hidden md:flex space-x-10">
+                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.thisWeek')}</a>
+                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.archives')}</a>
+                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.sources')}</a>
+                    <a href="#" className="text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide">{t('navigation.about')}</a>
+                  </nav>
+                  <select
+                    value={locale}
+                    onChange={(event) => setLocale(event.target.value as Locale)}
+                    className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  >
+                    {availableLocales.map(code => (
+                      <option key={code} value={code} className="bg-neutral-900">
+                        {t(`locales.${code}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
           </header>
@@ -271,13 +297,12 @@ function App() {
                   <div className="flex items-center mb-6">
                     <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
                     <div>
-                      <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">The Weekly</h3>
-                      <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">Intelligence Digest</p>
+                      <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">{t('footer.brandTitle')}</h3>
+                      <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
                     </div>
                   </div>
                   <p className="text-neutral-400 mb-6 font-light leading-relaxed">
-                    A curated intelligence briefing from the world's finest publications. 
-                    Thoughtfully assembled for the discerning reader who values depth over noise.
+                    {t('footer.description')}
                   </p>
                   <div className="flex space-x-6">
                     <ExternalLink className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
@@ -285,26 +310,26 @@ function App() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">Navigation</h4>
+                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
                   <ul className="space-y-3 text-neutral-400 font-light">
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">This Week</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Archives</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Sources</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">About</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.about')}</a></li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">Briefings</h4>
+                  <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
                   <ul className="space-y-3 text-neutral-400 font-light">
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Technology</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Business</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Science</a></li>
-                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">Health</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
+                    <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
                   </ul>
                 </div>
               </div>
               <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500">
-                <p className="font-light tracking-wide">&copy; 2025 The Weekly Intelligence Digest. All rights reserved.</p>
+                <p className="font-light tracking-wide">{t('footer.copyright', { year: currentYear })}</p>
               </div>
             </div>
           </footer>

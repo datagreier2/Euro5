@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { z, ZodSchema } from 'zod';
+import { ZodSchema } from 'zod';
 import { weeklyRowSchema } from '../validation'; // your weekly schema
 import type { WeeklyRow } from '../types';
 
@@ -76,4 +76,3 @@ export async function fetchCSVWithSchema<T extends Record<string, unknown>>(
 export async function fetchCSV(url: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<WeeklyRow[]> {
   return fetchCSVWithSchema<WeeklyRow>(url, weeklyRowSchema, timeoutMs);
 }
-

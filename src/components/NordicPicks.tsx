@@ -1,6 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { NordicPickRow } from '../validation-nordic';
-import { ChevronLeft, ChevronRight, ExternalLink, Globe } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
+import { useI18n } from '../i18n';
+
+const europeMapGraphics = import.meta.glob('../../data/europe_map_graphics/*/vector.svg', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>;
+
+function resolveCountryGraphic(country?: string | null): string | null {
+  if (!country) return null;
+  const key = country.trim().toLowerCase();
+  if (!key) return null;
+  return europeMapGraphics[`../../data/europe_map_graphics/${key}/vector.svg`] ?? null;
+}
 
 interface NordicPicksProps {
   picks: NordicPickRow[];
@@ -23,6 +36,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
     return null;
   }
 
+  const { t } = useI18n();
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -110,10 +124,10 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">Nordic Picks</h2>
+          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">{t('sections.nordic.title')}</h2>
           <div className="w-16 h-px bg-amber-400" />
         </div>
-        <span className="text-neutral-400 font-light tracking-wide">Curated regional insights</span>
+        <span className="text-neutral-400 font-light tracking-wide">{t('sections.nordic.tagline')}</span>
       </div>
 
       <div className="relative mb-16">
@@ -135,34 +149,39 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
             {picks.map((pick, idx) => {
               const title = pick.title;
               const summary = stripHtml(pick.summary);
-              const sourceLabel = pick.source_name?.trim() || 'Independent';
-              const countryCode = pick.country?.trim() || 'Nordic';
+              const sourceLabel = pick.source_name?.trim() || t('cards.defaultSource');
+              const countryCode = pick.country ? String(pick.country).trim().toUpperCase() : '';
+              const countryGraphic = resolveCountryGraphic(countryCode);
               const hasLink = Boolean(pick.link);
 
               return (
                 <article
                   key={`${title}-${idx}`}
                   ref={el => { cardsRef.current[idx] = el; }}
-                  className={`snap-center w-[16rem] flex-shrink-0 max-[511px]:w-72 bg-neutral-900 border border-neutral-800 hover:border-amber-600 transition-all duration-300 flex flex-col ${
+                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-neutral-900 border border-neutral-800 hover:border-amber-600 transition-all duration-300 flex flex-col ${
                     hasLink ? 'group cursor-pointer' : ''
                   }`}
                 >
-                  <div className="aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
-                    <div className="flex flex-col items-center justify-center text-center">
-                      <Globe className="w-8 h-8 text-amber-400 mb-2" />
-                      <span className="text-xs font-light uppercase tracking-[0.3em] text-neutral-400">
+                  <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
+                    {countryGraphic && (
+                      <img
+                        src={countryGraphic}
+                        alt={countryCode ? t('cards.mapAlt', { code: countryCode }) : t('cards.mapAltFallback')}
+                        className="h-full w-full object-contain p-6 opacity-80"
+                      />
+                    )}
+                    {countryCode && (
+                      <span className="absolute bottom-3 right-3 text-xs font-light uppercase tracking-[0.3em] text-neutral-400">
                         {countryCode}
                       </span>
-                    </div>
+                    )}
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center justify-between text-xs text-neutral-400 mb-4 font-light tracking-wide">
-                      <span className="font-serif italic text-sm text-neutral-300">{sourceLabel}</span>
-                      {pick.category && (
-                        <span className="px-2 py-1 text-[0.65rem] uppercase tracking-[0.25em] bg-neutral-800 text-amber-400 border border-neutral-700">
-                          {pick.category}
-                        </span>
-                      )}
+                    <div className="flex items-center text-sm text-neutral-400 mb-4 font-light tracking-wide">
+                      <span className="flex items-center font-serif italic">
+                        <Newspaper className="w-4 h-4 mr-2" />
+                        {sourceLabel}
+                      </span>
                     </div>
                     <h3 className="font-serif text-neutral-100 text-xl mb-4 leading-tight">
                       {hasLink ? (
@@ -179,24 +198,10 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
                       )}
                     </h3>
                     {summary && (
-                      <p className="text-neutral-400 text-sm line-clamp-4 mb-6 font-light leading-relaxed">
+                      <p className="text-neutral-400 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
                         {summary}
                       </p>
                     )}
-                    <div className="flex items-center justify-between text-xs font-light tracking-wide text-neutral-500">
-                      <span className="uppercase tracking-[0.25em] text-amber-400">Nordic Pick</span>
-                      {hasLink && (
-                        <a
-                          href={pick.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-neutral-300 hover:text-amber-400 transition-colors"
-                        >
-                          Read story
-                          <ExternalLink className="w-4 h-4 ml-2" />
-                        </a>
-                      )}
-                    </div>
                   </div>
                 </article>
               );

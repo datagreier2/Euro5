@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n';
+
 type Props = {
   currentPage: number;
   totalPages: number;
@@ -7,6 +9,8 @@ type Props = {
 };
 
 export default function Pagination({ currentPage, totalPages, onPrev, onNext, onJump }: Props) {
+  const { t } = useI18n();
+
   if (totalPages <= 1) return null;
 
   return (
@@ -16,7 +20,7 @@ export default function Pagination({ currentPage, totalPages, onPrev, onNext, on
         disabled={currentPage === 1}
         className="px-6 py-3 text-sm font-light text-neutral-300 bg-neutral-900 border border-neutral-700 hover:border-amber-600 hover:text-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors tracking-wide"
       >
-        Previous
+        {t('pagination.previous')}
       </button>
 
       <div className="flex flex-wrap justify-center gap-2">
@@ -40,7 +44,7 @@ export default function Pagination({ currentPage, totalPages, onPrev, onNext, on
         disabled={currentPage === totalPages}
         className="px-6 py-3 text-sm font-light text-neutral-300 bg-neutral-900 border border-neutral-700 hover:border-amber-600 hover:text-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors tracking-wide"
       >
-        Next
+        {t('pagination.next')}
       </button>
     </div>
   );

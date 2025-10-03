@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { The5Row } from '../validation-the5';
-import { ChevronLeft, ChevronRight, ExternalLink, Newspaper } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
+import { useI18n } from '../i18n';
 
 const europeMapGraphics = import.meta.glob('../../data/europe_map_graphics/*/vector.svg', {
   eager: true,
@@ -23,6 +24,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
     return null;
   }
 
+  const { t } = useI18n();
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -111,10 +113,12 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">The 5</h2>
+          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">{t('sections.the5.title')}</h2>
           <div className="w-16 h-px bg-amber-400" />
         </div>
-        <span className="text-neutral-400 font-light tracking-wide">{articles.length} briefings</span>
+        <span className="text-neutral-400 font-light tracking-wide">
+          {t('sections.the5.countLabel', { count: articles.length })}
+        </span>
       </div>
 
       <div className="relative mb-16">
@@ -137,7 +141,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
               const title = article.short_headline || article.title;
               const summary = article.summary?.trim();
               const sourceLabel =
-                article.source_name || article.source_display || article.source_domain || 'Independent';
+                article.source_name || article.source_display || article.source_domain || t('cards.defaultSource');
               const countryCode = article.country ? String(article.country).trim().toUpperCase() : '';
               const countryGraphic = resolveCountryGraphic(countryCode);
               const hasLink = Boolean(article.link);
@@ -146,7 +150,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                 <article
                   key={`${title}-${idx}`}
                   ref={el => { cardsRef.current[idx] = el; }}
-                  className={`snap-center w-[13.5rem] flex-shrink-0 max-[511px]:w-72 bg-neutral-900 border border-neutral-800 hover:border-amber-600 transition-all duration-300 flex flex-col ${
+                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-neutral-900 border border-neutral-800 hover:border-amber-600 transition-all duration-300 flex flex-col ${
                     hasLink ? 'group cursor-pointer' : ''
                   }`}
                 >
@@ -154,7 +158,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                     {countryGraphic && (
                       <img
                         src={countryGraphic}
-                        alt={countryCode ? `${countryCode} map` : 'European map'}
+                        alt={countryCode ? t('cards.mapAlt', { code: countryCode }) : t('cards.mapAltFallback')}
                         className="h-full w-full object-contain p-6 opacity-80"
                       />
                     )}
@@ -190,20 +194,6 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                         {summary}
                       </p>
                     )}
-                    <div className="flex items-center justify-between text-xs font-light tracking-wide text-neutral-500">
-                      <span className="uppercase tracking-[0.2em] text-amber-400">Top Story</span>
-                      {hasLink && (
-                        <a
-                          href={article.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-neutral-300 hover:text-amber-400 transition-colors"
-                        >
-                          Read story
-                          <ExternalLink className="w-4 h-4 ml-2" />
-                        </a>
-                      )}
-                    </div>
                   </div>
                 </article>
               );
