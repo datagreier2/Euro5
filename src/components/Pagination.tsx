@@ -10,7 +10,7 @@ export default function Pagination({ currentPage, totalPages, onPrev, onNext, on
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex justify-center items-center space-x-3 pb-16">
+    <div className="flex flex-wrap justify-center items-center gap-3 pb-16">
       <button
         onClick={onPrev}
         disabled={currentPage === 1}
@@ -19,7 +19,7 @@ export default function Pagination({ currentPage, totalPages, onPrev, onNext, on
         Previous
       </button>
 
-      <div className="flex space-x-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
           <button
             key={page}
