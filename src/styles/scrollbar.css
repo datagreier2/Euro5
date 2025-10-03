@@ -1,10 +1,16 @@
-/* Hide scrollbar on WebKit (Chrome, Safari) */
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
+/* Hide scrollbars on all major engines */
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+  scrollbar-color: transparent transparent;
 }
 
-/* Hide scrollbar for IE, Edge */
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none; /* Firefox */
+.scrollbar-none::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+.scrollbar-none::-webkit-scrollbar-thumb {
+  background: transparent;
 }

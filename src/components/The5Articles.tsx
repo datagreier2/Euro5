@@ -21,7 +21,7 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
       </div>
 
       <div className="relative mb-16">
-        <div className="overflow-x-auto pb-2 scrollbar-none">
+        <div className="overflow-x-auto overflow-y-hidden pb-2 scrollbar-none">
           <div className="flex gap-6 sm:gap-8 min-w-max pr-4 sm:pr-0">
             {articles.map((article, idx) => {
               const title = article.short_headline || article.title;
