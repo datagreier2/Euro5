@@ -7,12 +7,14 @@ import logoMark from '../media/svg/Euro5_E5n_Logo_2.svg';
 
 import { fetchCSV, fetchCSVWithSchema, CsvError } from './lib/fetchCsv';
 import { the5RowSchema, type The5Row } from './validation-the5';
+import { nordicPickRowSchema, type NordicPickRow } from './validation-nordic';
 import type { WeeklyRow, NewsStory } from './types';
 
 import StoriesGrid from './components/StoriesGrid';
 import Pagination from './components/Pagination';
 
 import The5Articles from './components/The5Articles';
+import NordicPicks from './components/NordicPicks';
 
 
 
@@ -22,7 +24,8 @@ import The5Articles from './components/The5Articles';
 /* ---------- helpers (outside component) ---------- */
 
 const WEEKLY_CSV_URL = `${import.meta.env.BASE_URL}data/weekly.csv`;
-const THE5_CSV_URL   = `${import.meta.env.BASE_URL}data/the_5.csv`;
+const THE5_CSV_URL        = `${import.meta.env.BASE_URL}data/the_5.csv`;
+const NORDIC_PICKS_CSV_URL = `${import.meta.env.BASE_URL}data/nordic_picks.csv`;
 
 const PLACEHOLDER_IMG =
   'https://images.pexels.com/photos/1108101/pexels-photo-1108101.jpeg?auto=compress&cs=tinysrgb&w=800';
@@ -127,6 +130,7 @@ function App() {
   const [stories, setStories] = useState<NewsStory[]>([]);
   const [the5Rows, setThe5Rows] = useState<The5Row[] | null>(null);
   const [weekLabel, setWeekLabel] = useState('');
+  const [nordicPicks, setNordicPicks] = useState<NordicPickRow[] | null>(null);
 
 
 
@@ -143,9 +147,10 @@ function App() {
       setLoading(true);
       setError(null);
       try {
-        const [weekly, top5, weeklyHead] = await Promise.all([
+        const [weekly, top5, nordic, weeklyHead] = await Promise.all([
           fetchCSV(WEEKLY_CSV_URL),                                  // validates with weeklyRowSchema
           fetchCSVWithSchema<The5Row>(THE5_CSV_URL, the5RowSchema),  // validates with the5RowSchema
+          fetchCSVWithSchema<NordicPickRow>(NORDIC_PICKS_CSV_URL, nordicPickRowSchema),
           fetch(WEEKLY_CSV_URL, { method: 'HEAD', cache: 'no-store' }).catch(() => null),
         ]);
 
@@ -158,6 +163,7 @@ function App() {
 
         setStories(transformRowsToStories(weekly));
         setThe5Rows(top5);
+        setNordicPicks(nordic);
         if (computedLabel) setWeekLabel(computedLabel);
         console.log('the_5.csv rows:', top5.length);
       } catch (err) {
@@ -233,6 +239,7 @@ function App() {
           </header>
           {/* The 5 Articles Section */}
           {the5Rows && <The5Articles articles={the5Rows} />}
+          {nordicPicks && <NordicPicks picks={nordicPicks} />}
 
 
           {/* Grid */}
