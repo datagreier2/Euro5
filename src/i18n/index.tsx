@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { en } from './translations/en';
 import { nb } from './translations/nb';
+import { nn } from './translations/nn';
 import { da } from './translations/da';
 import { sv } from './translations/sv';
 
@@ -9,6 +10,7 @@ type TranslationShape = typeof en;
 const translations = {
   en,
   nb,
+  nn,
   da,
   sv,
 } as const;
@@ -46,7 +48,7 @@ function format(template: string, replacements: Replacements | undefined) {
   });
 }
 
-export function I18nProvider({ children, defaultLocale = 'en' }: { children: ReactNode; defaultLocale?: Locale }) {
+export function I18nProvider({ children, defaultLocale = 'nb' }: { children: ReactNode; defaultLocale?: Locale }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
 
   const translate = useCallback<TranslateFn>((key, replacements) => {

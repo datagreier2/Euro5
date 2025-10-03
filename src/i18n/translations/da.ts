@@ -61,7 +61,8 @@ export const da = {
   },
   locales: {
     en: 'Engelsk',
-    nb: 'Norsk',
+    nb: 'Norsk (bokmål)',
+    nn: 'Norsk (nynorsk)',
     da: 'Dansk',
     sv: 'Svensk',
   },

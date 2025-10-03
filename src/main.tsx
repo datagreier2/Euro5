@@ -5,12 +5,13 @@ import './index.css';          // <-- this import is essential
 import { I18nProvider, Locale } from './i18n';
 
 function detectLocale(): Locale {
-  if (typeof navigator === 'undefined') return 'en';
+  if (typeof navigator === 'undefined') return 'nb';
   const lang = navigator.language.toLowerCase();
+  if (lang.startsWith('nn')) return 'nn';
   if (lang.startsWith('nb') || lang.startsWith('no')) return 'nb';
   if (lang.startsWith('da')) return 'da';
   if (lang.startsWith('sv')) return 'sv';
-  return 'en';
+  return 'nb';
 }
 
 const defaultLocale = detectLocale();

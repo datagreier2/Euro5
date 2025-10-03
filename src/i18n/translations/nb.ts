@@ -4,12 +4,12 @@ export const nb = {
   },
   errors: {
     loadDataTitle: 'Kunne ikke hente data',
-    unknownCsv: 'Ukjent feil under lasting av CSV.',
+    unknownCsv: 'Ukjent feil under lasting av data.',
   },
   header: {
     weekLabel: 'Uke {{week}}',
     weekFallback: 'Uke --',
-    tagline: 'Europeiske nyhetsoppsummeringer',
+    tagline: 'Nyheter fra Europa',
   },
   navigation: {
     thisWeek: 'Denne uken',
@@ -19,20 +19,20 @@ export const nb = {
   },
   sections: {
     the5: {
-      title: 'De 5',
+      title: 'Ukens 5',
       countLabel: '{{count}} sammendrag',
     },
     nordic: {
-      title: 'Nordiske utvalgte',
-      tagline: 'Kuraterte regionale innsikter',
+      title: 'Fra Norden',
+      tagline: 'Hentet fra Nordiske redaksjoner'
     },
     weekly: {
-      title: 'Ukentlig brief [BETA]',
+      title: 'Ukentlig utvalg [BETA]',
       reportsCount: '{{count}} rapporter',
     },
   },
   filters: {
-    searchPlaceholder: 'Søk i innsikt…',
+    searchPlaceholder: 'Søk [BETA]',
     allCategory: 'Alle',
   },
   pagination: {
@@ -46,9 +46,9 @@ export const nb = {
     mapAltFallback: 'Kart over Europa',
   },
   footer: {
-    brandTitle: 'The Weekly',
-    brandSubtitle: 'Etterretningsoversikt',
-    description: 'En kuratert etterretningsbrief fra verdens beste publikasjoner. Omhyggelig satt sammen for den kresne leseren som verdsetter dybde fremfor støy.',
+    brandTitle: 'Euro5',
+    brandSubtitle: 'Nyheter fra Europa',
+    description: 'Automatisert nyhetsinnsamling for støtte menneskelig journalistikk',
     navigationTitle: 'Navigasjon',
     briefingsTitle: 'Briefinger',
     briefings: {
@@ -57,11 +57,12 @@ export const nb = {
       science: 'Vitenskap',
       health: 'Helse',
     },
-    copyright: '© {{year}} The Weekly Intelligence Digest. Alle rettigheter forbeholdt.',
+    copyright: '© {{year}} Aron Lindegård. Alle rettigheter forbeholdt.',
   },
   locales: {
     en: 'Engelsk',
     nb: 'Norsk',
+    nn: 'Nynorsk',
     da: 'Dansk',
     sv: 'Svensk',
   },
