@@ -63,20 +63,20 @@ export default function DevPage() {
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <header className="mb-12">
-        <h2 className="text-4xl font-serif text-neutral-100 tracking-wide mb-4">
+        <h2 className="text-4xl font-serif text-neutral-900 tracking-wide mb-4">
           {t('devPage.title')}
         </h2>
-        <p className="text-neutral-300 font-light leading-relaxed">
+        <p className="text-neutral-600 font-light leading-relaxed">
           {t('devPage.subtitle')}
         </p>
       </header>
 
       {loading && (
-        <div className="p-6 text-neutral-200">{t('devPage.loading')}</div>
+        <div className="p-6 text-neutral-600">{t('devPage.loading')}</div>
       )}
 
       {error && !loading && (
-        <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
+        <div className="m-6 p-4 bg-red-50 border border-red-200 text-red-700">
           <strong>{t('devPage.errorTitle')}</strong>
           <div className="mt-2 text-sm">{error}</div>
         </div>
@@ -84,8 +84,8 @@ export default function DevPage() {
 
       {!loading && !error && (
         <section className="grid gap-6 md:grid-cols-2">
-          <article className="bg-neutral-900 border border-neutral-800 p-6">
-            <h3 className="text-2xl font-serif text-neutral-100 mb-4 tracking-wide">
+          <article className="bg-white border border-neutral-200 p-6">
+            <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
               {t('devPage.commitsHeading')}
             </h3>
             <ul className="space-y-4">
@@ -93,15 +93,15 @@ export default function DevPage() {
                 <li className="text-neutral-500 font-light">{t('devPage.emptyState')}</li>
               )}
               {entries.map((entry, idx) => (
-                <li key={`commit-${idx}`} className="text-neutral-300 font-light leading-relaxed">
+                <li key={`commit-${idx}`} className="text-neutral-600 font-light leading-relaxed">
                   {entry.commit || t('devPage.noEntry')}
                 </li>
               ))}
             </ul>
           </article>
 
-          <article className="bg-neutral-900 border border-neutral-800 p-6">
-            <h3 className="text-2xl font-serif text-neutral-100 mb-4 tracking-wide">
+          <article className="bg-white border border-neutral-200 p-6">
+            <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
               {t('devPage.issuesHeading')}
             </h3>
             <ul className="space-y-4">
@@ -109,7 +109,7 @@ export default function DevPage() {
                 <li className="text-neutral-500 font-light">{t('devPage.emptyState')}</li>
               )}
               {entries.map((entry, idx) => (
-                <li key={`issue-${idx}`} className="text-neutral-300 font-light leading-relaxed">
+                <li key={`issue-${idx}`} className="text-neutral-600 font-light leading-relaxed">
                   {entry.issue || t('devPage.noEntry')}
                 </li>
               ))}

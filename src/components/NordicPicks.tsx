@@ -124,10 +124,10 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-3xl font-serif text-neutral-100 mb-2 tracking-wide">{t('sections.nordic.title')}</h2>
-          <div className="w-16 h-px bg-amber-400" />
+          <h2 className="text-3xl font-serif text-neutral-900 mb-2 tracking-wide">{t('sections.nordic.title')}</h2>
+          <div className="w-16 h-px bg-amber-500" />
         </div>
-        <span className="text-neutral-400 font-light tracking-wide">{t('sections.nordic.tagline')}</span>
+        <span className="text-neutral-600 font-light tracking-wide">{t('sections.nordic.tagline')}</span>
       </div>
 
       <div className="relative mb-16">
@@ -136,7 +136,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
           onClick={() => goToRelativeCard(-1)}
           disabled={activeIndex === 0}
           aria-label="Scroll Nordic Picks left"
-          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-neutral-950/80 text-neutral-200 shadow-lg ring-1 ring-neutral-700 backdrop-blur transition hover:text-amber-400 disabled:opacity-40 disabled:hover:text-neutral-200"
+          className="absolute left-0 top-1/2 z-10 -translate-y-1/2 hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-lg ring-1 ring-neutral-200 backdrop-blur transition hover:text-amber-600 disabled:opacity-40 disabled:hover:text-neutral-600"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
@@ -158,38 +158,38 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
                 <article
                   key={`${title}-${idx}`}
                   ref={el => { cardsRef.current[idx] = el; }}
-                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-neutral-900 border border-neutral-800 hover:border-amber-600 transition-all duration-300 flex flex-col ${
+                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-white border border-neutral-200 hover:border-amber-500 transition-all duration-300 flex flex-col ${
                     hasLink ? 'group cursor-pointer' : ''
                   }`}
                 >
-                  <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
+                  <div className="relative aspect-video overflow-hidden bg-neutral-100 flex items-center justify-center">
                     {countryGraphic && (
                       <img
                         src={countryGraphic}
                         alt={countryCode ? t('cards.mapAlt', { code: countryCode }) : t('cards.mapAltFallback')}
-                        className="h-full w-full object-contain p-6 opacity-80"
+                        className="h-full w-full object-contain p-6 opacity-90"
                       />
                     )}
                     {countryCode && (
-                      <span className="absolute bottom-3 right-3 text-xs font-light uppercase tracking-[0.3em] text-neutral-400">
+                      <span className="absolute bottom-3 right-3 text-xs font-light uppercase tracking-[0.3em] text-neutral-500">
                         {countryCode}
                       </span>
                     )}
                   </div>
                   <div className="p-6">
-                    <div className="flex items-center text-sm text-neutral-400 mb-4 font-light tracking-wide">
+                    <div className="flex items-center text-sm text-neutral-500 mb-4 font-light tracking-wide">
                       <span className="flex items-center font-serif italic">
                         <Newspaper className="w-4 h-4 mr-2" />
                         {sourceLabel}
                       </span>
                     </div>
-                    <h3 className="font-serif text-neutral-100 text-xl mb-4 leading-tight">
+                    <h3 className="font-serif text-neutral-900 text-xl mb-4 leading-tight">
                       {hasLink ? (
                         <a
                           href={pick.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="transition-colors group-hover:text-amber-400"
+                          className="transition-colors group-hover:text-amber-600"
                         >
                           {title}
                         </a>
@@ -198,7 +198,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
                       )}
                     </h3>
                     {summary && (
-                      <p className="text-neutral-400 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
+                      <p className="text-neutral-600 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
                         {summary}
                       </p>
                     )}
@@ -213,7 +213,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
           onClick={() => goToRelativeCard(1)}
           disabled={activeIndex >= picks.length - 1}
           aria-label="Scroll Nordic Picks right"
-          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-neutral-950/80 text-neutral-200 shadow-lg ring-1 ring-neutral-700 backdrop-blur transition hover:text-amber-400 disabled:opacity-40 disabled:hover:text-neutral-200"
+          className="absolute right-0 top-1/2 z-10 -translate-y-1/2 hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-lg ring-1 ring-neutral-200 backdrop-blur transition hover:text-amber-600 disabled:opacity-40 disabled:hover:text-neutral-600"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
@@ -222,7 +222,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
             type="button"
             onClick={() => goToRelativeCard(-1)}
             disabled={activeIndex === 0}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-amber-500 hover:text-amber-400 disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-600 hover:border-amber-500 hover:text-amber-600 disabled:opacity-40"
             aria-label="Scroll Nordic Picks left"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -231,7 +231,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
             type="button"
             onClick={() => goToRelativeCard(1)}
             disabled={activeIndex >= picks.length - 1}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-amber-500 hover:text-amber-400 disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-300 bg-white text-neutral-600 hover:border-amber-500 hover:text-amber-600 disabled:opacity-40"
             aria-label="Scroll Nordic Picks right"
           >
             <ChevronRight className="h-5 w-5" />

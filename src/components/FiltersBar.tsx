@@ -25,7 +25,7 @@ export default function FiltersBar({
           placeholder={t('filters.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => onSearch(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 placeholder-neutral-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-light tracking-wide"
+          className="w-full pl-12 pr-4 py-3 bg-white border border-neutral-300 text-neutral-700 placeholder-neutral-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-light tracking-wide"
         />
       </div>
 
@@ -35,10 +35,10 @@ export default function FiltersBar({
         <select
           value={selectedCategory}
           onChange={(e) => onSelectCategory(e.target.value)}
-          className="w-full pl-12 pr-8 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 focus:ring-2 focus:ring-amber-500 focus:border-transparent appearance-none font-light tracking-wide"
+          className="w-full pl-12 pr-8 py-3 bg-white border border-neutral-300 text-neutral-700 focus:ring-2 focus:ring-amber-500 focus:border-transparent appearance-none font-light tracking-wide"
         >
           {categories.map(category => (
-            <option key={category} value={category} className="bg-neutral-800">
+            <option key={category} value={category} className="bg-white">
               {category === 'All' ? t('filters.allCategory') : category}
             </option>
           ))}

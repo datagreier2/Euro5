@@ -193,50 +193,50 @@ function App() {
     `${code.slice(0, 1).toUpperCase()}${code.slice(1).toLowerCase()}`
   ), []);
   const navLinkClass = useCallback((active: boolean) => (
-    `text-neutral-300 hover:text-amber-400 transition-colors font-light tracking-wide ${active ? 'text-amber-400' : ''}`
+    `text-neutral-500 hover:text-amber-600 transition-colors font-light tracking-wide ${active ? 'text-amber-600' : ''}`
   ), []);
 
   const footer = (
-    <footer className="bg-neutral-950 border-t border-neutral-800">
+    <footer className="bg-neutral-100 border-t border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-6">
               <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
               <div>
-                <h3 className="text-2xl font-serif text-neutral-100 tracking-wide">{t('footer.brandTitle')}</h3>
-                <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
+                <h3 className="text-2xl font-serif text-neutral-900 tracking-wide">{t('footer.brandTitle')}</h3>
+                <p className="text-xs text-neutral-500 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
               </div>
             </div>
-            <p className="text-neutral-400 mb-6 font-light leading-relaxed">
+            <p className="text-neutral-600 mb-6 font-light leading-relaxed">
               {t('footer.description')}
             </p>
             <div className="flex space-x-6">
-              <ExternalLink className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
-              <BookOpen className="w-5 h-5 text-neutral-400 hover:text-amber-400 transition-colors cursor-pointer" />
+              <ExternalLink className="w-5 h-5 text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer" />
+              <BookOpen className="w-5 h-5 text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer" />
             </div>
           </div>
           <div>
-            <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
-            <ul className="space-y-3 text-neutral-400 font-light">
-              <li><a href="/" onClick={handleNav('/')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
-              <li><a href="/dev" onClick={handleNav('/dev')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.dev')}</a></li>
-              <li><a href="/about" onClick={handleNav('/about')} className="hover:text-amber-400 transition-colors tracking-wide">{t('navigation.about')}</a></li>
+            <h4 className="font-serif text-neutral-800 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
+            <ul className="space-y-3 text-neutral-600 font-light">
+              <li><a href="/" onClick={handleNav('/')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
+              <li><a href="/dev" onClick={handleNav('/dev')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.dev')}</a></li>
+              <li><a href="/about" onClick={handleNav('/about')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.about')}</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-serif text-neutral-200 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
-            <ul className="space-y-3 text-neutral-400 font-light">
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
+            <h4 className="font-serif text-neutral-800 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
+            <ul className="space-y-3 text-neutral-600 font-light">
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
+              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-neutral-800 mt-12 pt-8 text-center text-neutral-500">
+        <div className="border-t border-neutral-200 mt-12 pt-8 text-center text-neutral-500">
           <p className="font-light tracking-wide">{t('footer.copyright', { year: currentYear })}</p>
         </div>
       </div>
@@ -304,8 +304,8 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
-      <header className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <header className="bg-white border-b border-neutral-200 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center">
@@ -316,12 +316,12 @@ function App() {
               >
                 <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
                 <div>
-                  <h1 className="text-3xl font-serif text-neutral-100 tracking-wide">Euro5</h1>
-                  <p className="text-xs text-neutral-400 font-light tracking-widest uppercase">{t('header.tagline')}</p>
+                  <h1 className="text-3xl font-serif text-neutral-900 tracking-wide">Euro5</h1>
+                  <p className="text-xs text-neutral-500 font-light tracking-widest uppercase">{t('header.tagline')}</p>
                 </div>
               </a>
               {!isAboutRoute && !isDevRoute && (
-                <span className="ml-6 px-3 py-1 text-xs font-light bg-neutral-950 text-amber-200 border border-amber-700">
+                <span className="ml-6 px-3 py-1 text-xs font-light bg-amber-50 text-amber-700 border border-amber-200">
                   {weekBadgeLabel}
                 </span>
               )}
@@ -334,10 +334,10 @@ function App() {
               <select
                 value={locale}
                 onChange={(event) => setLocale(event.target.value as Locale)}
-                className="bg-neutral-900 border border-neutral-700 text-neutral-100 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="bg-white border border-neutral-300 text-neutral-700 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
               >
                 {availableLocales.map(code => (
-                  <option key={code} value={code} className="bg-neutral-900">
+                  <option key={code} value={code} className="bg-white">
                     {localeLabel(code)}
                   </option>
                 ))}
@@ -348,11 +348,11 @@ function App() {
       </header>
 
       {!isAboutRoute && !isDevRoute && loading && (
-        <div className="p-6 text-neutral-200">{t('common.loading')}</div>
+        <div className="p-6 text-neutral-600">{t('common.loading')}</div>
       )}
 
       {!isAboutRoute && !isDevRoute && error && !loading && (
-        <div className="m-6 p-4 bg-neutral-900 border border-red-500 text-red-200">
+        <div className="m-6 p-4 bg-red-50 border border-red-200 text-red-700">
           <strong>{t('errors.loadDataTitle')}</strong>
           <div className="mt-2 text-sm">{errorMessage}</div>
         </div>
