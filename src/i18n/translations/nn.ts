@@ -27,6 +27,10 @@ export const nn = {
       title: 'Nordiske utvalde',
       tagline: 'Kuraterte regionale innsikter',
     },
+    debattert: {
+      title: 'Mest debatterte',
+      tagline: '{{count}} debattar',
+    },
     weekly: {
       title: 'Vekebrev [BETA]',
       reportsCount: '{{count}} rapportar',

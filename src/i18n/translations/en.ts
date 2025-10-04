@@ -27,6 +27,10 @@ export const en = {
       title: 'Nordic Picks',
       tagline: 'Curated regional insights',
     },
+    debattert: {
+      title: 'Most Debated',
+      tagline: '{{count}} discussion highlights',
+    },
     weekly: {
       title: 'Weekly Briefing [BETA]',
       reportsCount: '{{count}} reports',

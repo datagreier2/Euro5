@@ -27,6 +27,10 @@ export const sv = {
       title: 'Nordiska urval',
       tagline: 'Kuraterade regionala insikter',
     },
+    debattert: {
+      title: 'Mest debatterat',
+      tagline: '{{count}} debatter',
+    },
     weekly: {
       title: 'Veckobrief [BETA]',
       reportsCount: '{{count}} rapporter',

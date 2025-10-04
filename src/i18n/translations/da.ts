@@ -27,6 +27,10 @@ export const da = {
       title: 'Nordiske udvalgte',
       tagline: 'Kuraterede regionale indsigter',
     },
+    debattert: {
+      title: 'Debatteret',
+      tagline: '{{count}} debatter',
+    },
     weekly: {
       title: 'Ugentlig brief [BETA]',
       reportsCount: '{{count}} rapporter',

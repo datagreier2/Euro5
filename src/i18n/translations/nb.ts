@@ -27,6 +27,10 @@ export const nb = {
       title: 'Fra Norden',
       tagline: 'Hentet fra Nordiske redaksjoner'
     },
+    debattert: {
+      title: 'Debattert',
+      tagline: '{{count}} debatter',
+    },
     weekly: {
       title: 'Ukentlig utvalg [BETA]',
       reportsCount: '{{count}} rapporter',

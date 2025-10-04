@@ -15,6 +15,7 @@ import StoriesGrid from './components/StoriesGrid';
 import Pagination from './components/Pagination';
 
 import The5Articles from './components/The5Articles';
+import DebattertStories from './components/DebattertStories';
 import NordicPicks from './components/NordicPicks';
 import AboutPage from './pages/About';
 import DevPage from './pages/Dev';
@@ -291,6 +292,10 @@ function App() {
     return ['All', ...Array.from(set)];
   }, [stories]);
 
+  const debattertStories = useMemo(() => (
+    stories.filter(story => story.category === 'Debattert').slice(0, 12)
+  ), [stories]);
+
   const filteredStories = useMemo(() => {
     return stories.filter(story => {
       const q = searchTerm.toLowerCase();
@@ -366,6 +371,9 @@ function App() {
         !loading && !error && (
           <>
             {the5Rows && <The5Articles articles={the5Rows} />}
+            {!!debattertStories.length && (
+              <DebattertStories stories={debattertStories} formatDate={formatDate} />
+            )}
             {nordicPicks && <NordicPicks picks={nordicPicks} />}
 
             <StoriesGrid
