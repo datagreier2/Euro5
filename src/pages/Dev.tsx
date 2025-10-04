@@ -85,7 +85,7 @@ export default function DevPage() {
       {!loading && !error && (
         <section className="grid gap-6 md:grid-cols-2">
           <article className="bg-white border border-neutral-200 p-6">
-            <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
+            <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-4 tracking-wide">
               {t('devPage.commitsHeading')}
             </h3>
             <ul className="space-y-4">
@@ -101,7 +101,7 @@ export default function DevPage() {
           </article>
 
           <article className="bg-white border border-neutral-200 p-6">
-            <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
+            <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-4 tracking-wide">
               {t('devPage.issuesHeading')}
             </h3>
             <ul className="space-y-4">

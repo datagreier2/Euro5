@@ -26,7 +26,7 @@ export default function StoriesGrid({
   const { t } = useI18n();
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section id="debattert" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="flex items-center justify-between mb-12">
         <div>
           <h2 className="text-3xl font-serif text-neutral-900 mb-2 tracking-wide">{t('sections.weekly.title')}</h2>
@@ -57,7 +57,7 @@ export default function StoriesGrid({
               <div className="text-sm text-neutral-500 mb-4 font-light tracking-wide">
                 <span className="font-serif italic">{story.source}</span>
               </div>
-              <h3 className="font-serif text-neutral-900 text-xl mb-4 line-clamp-2 group-hover:text-amber-600 transition-colors leading-tight">
+              <h3 className="font-serif font-semibold text-neutral-900 text-xl mb-4 line-clamp-2 group-hover:text-amber-600 transition-colors leading-tight">
                 {story.title}
               </h3>
               <p className="text-neutral-600 text-sm line-clamp-3 mb-6 font-light leading-relaxed">

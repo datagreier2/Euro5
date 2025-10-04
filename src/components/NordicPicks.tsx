@@ -121,13 +121,15 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
   }, [picks.length, scrollToIndex]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex items-center justify-between mb-12">
-        <div>
-          <h2 className="text-3xl font-serif text-neutral-900 mb-2 tracking-wide">{t('sections.nordic.title')}</h2>
-          <div className="w-16 h-px bg-amber-500" />
+    <section id="norden" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="mb-12 px-1 sm:px-10">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-serif text-neutral-900 mb-2 tracking-wide">{t('sections.nordic.title')}</h2>
+            <div className="w-16 h-px bg-amber-500" />
+          </div>
+          <span className="text-neutral-600 font-light tracking-wide">{t('sections.nordic.tagline')}</span>
         </div>
-        <span className="text-neutral-600 font-light tracking-wide">{t('sections.nordic.tagline')}</span>
       </div>
 
       <div className="relative mb-16">
@@ -183,7 +185,7 @@ export default function NordicPicks({ picks }: NordicPicksProps) {
                         {sourceLabel}
                       </span>
                     </div>
-                    <h3 className="font-serif text-neutral-900 text-xl mb-4 leading-tight">
+                    <h3 className="font-serif font-semibold text-neutral-900 text-xl mb-4 leading-tight">
                       {hasLink ? (
                         <a
                           href={pick.link}

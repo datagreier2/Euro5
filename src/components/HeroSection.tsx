@@ -35,7 +35,7 @@ export default function HeroSection({ heroStories }: Props) {
                     {main.readTime} min
                   </span>
                 </div>
-                <h3 className="text-3xl font-serif text-neutral-900 mb-4 leading-tight group-hover:text-amber-600 transition-colors">
+                <h3 className="text-3xl font-serif font-semibold text-neutral-900 mb-4 leading-tight group-hover:text-amber-600 transition-colors">
                   {main.title}
                 </h3>
                 <p className="text-neutral-600 text-lg leading-relaxed font-light">

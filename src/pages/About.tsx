@@ -47,7 +47,7 @@ export default function AboutPage() {
       </section>
 
       <section className="bg-white border border-neutral-200 p-8 sm:p-10">
-        <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
+        <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-4 tracking-wide">
           {t('aboutPage.missionTitle')}
         </h3>
         <p className="text-neutral-600 font-light leading-relaxed">
@@ -56,7 +56,7 @@ export default function AboutPage() {
       </section>
 
       <section>
-        <h3 className="text-2xl font-serif text-neutral-900 mb-8 tracking-wide text-center">
+        <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-8 tracking-wide text-center">
           {t('aboutPage.valuesTitle')}
         </h3>
         <div className="grid gap-6 md:grid-cols-2">
@@ -75,7 +75,7 @@ export default function AboutPage() {
 
       <section className="grid gap-8 md:grid-cols-2">
         <div className="bg-white border border-neutral-200 p-8">
-          <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
+          <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-4 tracking-wide">
             {t('aboutPage.teamTitle')}
           </h3>
           <p className="text-neutral-600 font-light leading-relaxed">
@@ -83,7 +83,7 @@ export default function AboutPage() {
           </p>
         </div>
         <div className="bg-white border border-neutral-200 p-8">
-          <h3 className="text-2xl font-serif text-neutral-900 mb-4 tracking-wide">
+          <h3 className="text-2xl font-serif font-semibold text-neutral-900 mb-4 tracking-wide">
             {t('aboutPage.contactTitle')}
           </h3>
           <p className="text-neutral-600 font-light leading-relaxed mb-4">

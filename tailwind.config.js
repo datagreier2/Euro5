@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         serif: ['"EB Garamond"', 'serif'],
-        sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui'],
+        sans: ['"Ysabeau"', 'ui-sans-serif', 'system-ui'],
       },
       scale: { '102': '1.02' },
     },

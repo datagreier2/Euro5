@@ -157,7 +157,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [stories, setStories] = useState<NewsStory[]>([]);
   const [the5Rows, setThe5Rows] = useState<The5Row[] | null>(null);
-  const [weekNumber, setWeekNumber] = useState('');
+  const [, setWeekNumber] = useState('');
   const [nordicPicks, setNordicPicks] = useState<NordicPickRow[] | null>(null);
 
 
@@ -183,18 +183,23 @@ function App() {
     });
   }, [locale]);
 
-  const weekBadgeLabel = weekNumber
-    ? t('header.weekLabel', { week: weekNumber })
-    : t('header.weekFallback');
-
   const errorMessage = error === '__unknown__' ? t('errors.unknownCsv') : error;
   const currentYear = useMemo(() => new Date().getFullYear(), []);
   const localeLabel = useCallback((code: Locale) => (
     `${code.slice(0, 1).toUpperCase()}${code.slice(1).toLowerCase()}`
   ), []);
-  const navLinkClass = useCallback((active: boolean) => (
-    `text-neutral-500 hover:text-amber-600 transition-colors font-light tracking-wide ${active ? 'text-amber-600' : ''}`
-  ), []);
+  const handleSectionClick = useCallback((targetId: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const headerOffset = 80;
+    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+  }, []);
 
   const footer = (
     <footer className="bg-neutral-100 border-t border-neutral-200">
@@ -204,7 +209,7 @@ function App() {
             <div className="flex items-center mb-6">
               <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
               <div>
-                <h3 className="text-2xl font-serif text-neutral-900 tracking-wide">{t('footer.brandTitle')}</h3>
+                <h3 className="text-2xl font-serif font-semibold text-neutral-900 tracking-wide">{t('footer.brandTitle')}</h3>
                 <p className="text-xs text-neutral-500 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
               </div>
             </div>
@@ -305,32 +310,27 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <div className="bg-white border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
+            EURO5
+          </h1>
+        </div>
+      </div>
       <header className="bg-white border-b border-neutral-200 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center">
-              <a
-                href="/"
-                onClick={handleNav('/')}
-                className="flex items-center no-underline focus:outline-none"
-              >
-                <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
-                <div>
-                  <h1 className="text-3xl font-serif text-neutral-900 tracking-wide">Euro5</h1>
-                  <p className="text-xs text-neutral-500 font-light tracking-widest uppercase">{t('header.tagline')}</p>
-                </div>
-              </a>
+          <div className="flex items-center h-20">
+            <div className="flex-1" />
+            <nav className="flex-1 flex justify-center items-center gap-10 text-sm font-light tracking-wide text-neutral-600">
               {!isAboutRoute && !isDevRoute && (
-                <span className="ml-6 px-3 py-1 text-xs font-light bg-amber-50 text-amber-700 border border-amber-200">
-                  {weekBadgeLabel}
-                </span>
+                <>
+                  <a href="#the5" onClick={handleSectionClick('the5')} className="hover:text-amber-600 transition-colors uppercase">De 5</a>
+                  <a href="#debattert" onClick={handleSectionClick('debattert')} className="hover:text-amber-600 transition-colors uppercase">Debattert</a>
+                  <a href="#norden" onClick={handleSectionClick('norden')} className="hover:text-amber-600 transition-colors uppercase">Norden</a>
+                </>
               )}
-            </div>
-            <div className="flex items-center gap-6">
-              <nav className="hidden md:flex space-x-10">
-                <a href="/dev" onClick={handleNav('/dev')} className={navLinkClass(isDevRoute)}>{t('navigation.dev')}</a>
-                <a href="/about" onClick={handleNav('/about')} className={navLinkClass(isAboutRoute)}>{t('navigation.about')}</a>
-              </nav>
+            </nav>
+            <div className="flex-1 flex justify-end">
               <select
                 value={locale}
                 onChange={(event) => setLocale(event.target.value as Locale)}
