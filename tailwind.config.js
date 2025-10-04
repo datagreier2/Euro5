@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['"Source Serif 4"', 'serif'],
+        serif: ['"EB Garamond"', 'serif'],
         sans: ['"Source Sans 3"', 'ui-sans-serif', 'system-ui'],
       },
       scale: { '102': '1.02' },
