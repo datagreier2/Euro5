@@ -110,8 +110,8 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
   }, [articles.length, scrollToIndex]);
 
   return (
-    <section id="the5" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="mb-12 px-1 sm:px-10">
+    <section id="the5" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6 px-1 sm:px-10">
         <div>
           <h2 className="text-3xl font-serif font-semibold text-neutral-900 mb-2 tracking-wide">{t('sections.the5.title')}</h2>
           <div className="w-16 h-px bg-amber-500" />
@@ -147,11 +147,11 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                 <article
                   key={`${title}-${idx}`}
                   ref={el => { cardsRef.current[idx] = el; }}
-                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col px-6 sm:px-8 first:pl-0 sm:first:pl-0 ${
+                  className={`snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col items-center px-6 sm:px-8 first:pl-0 sm:first:pl-0 ${
                     hasLink ? 'group cursor-pointer' : ''
                   }`}
                 >
-                  <div className="relative aspect-video bg-neutral-100 flex items-center justify-center">
+                  <div className="relative w-full max-w-[12rem] aspect-[4/3] bg-neutral-100 flex items-center justify-center">
                     {countryGraphic && (
                       <img
                         src={countryGraphic}
@@ -165,10 +165,9 @@ export default function The5Articles({ articles }: The5ArticlesProps) {
                       </span>
                     )}
                   </div>
-                  <div className="py-6">
-                    <div className="flex items-center text-sm text-neutral-500 mb-4 font-light tracking-wide">
-                      <span className="flex items-center font-serif italic">
-                        <Newspaper className="w-4 h-4 mr-2" />
+                  <div className="py-6 w-full">
+                    <div className="text-sm text-neutral-500 mb-4 font-light tracking-wide">
+                      <span className="font-serif italic">
                         {sourceLabel}
                       </span>
                     </div>

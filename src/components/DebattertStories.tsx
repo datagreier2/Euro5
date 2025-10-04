@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { NewsStory } from '../types';
-import { Calendar, Clock, ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useI18n } from '../i18n';
+import debatedGraphic from '../../media/svg/debated.svg';
 
 interface DebattertStoriesProps {
   stories: NewsStory[];
@@ -98,8 +99,8 @@ export default function DebattertStories({ stories, formatDate }: DebattertStori
   }, [stories.length, scrollToIndex]);
 
   return (
-    <section id="debattert" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="mb-12 px-1 sm:px-10">
+    <section id="debattert" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6 px-1 sm:px-10">
         <div>
           <h2 className="text-3xl font-serif font-semibold text-neutral-900 mb-2 tracking-wide">{t('sections.debattert.title')}</h2>
           <div className="w-16 h-px bg-amber-500" />
@@ -126,19 +127,18 @@ export default function DebattertStories({ stories, formatDate }: DebattertStori
               <article
                 key={story.id}
                 ref={el => { cardsRef.current[idx] = el; }}
-                className="snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col px-6 sm:px-8 first:pl-0 sm:first:pl-0"
+                className="snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col items-center px-6 sm:px-8 first:pl-0 sm:first:pl-0"
               >
-                <div className="relative aspect-video overflow-hidden bg-neutral-100">
+                <div className="relative w-full max-w-[10rem] aspect-[4/3] bg-neutral-100 flex items-center justify-center">
                   <img
-                    src={story.imageUrl}
-                    alt={story.title}
-                    className="h-full w-full object-cover"
+                    src={debatedGraphic}
+                    alt={t('sections.debattert.title')}
+                    className="h-full w-full object-contain p-5 opacity-90"
                   />
                 </div>
-                <div className="py-6">
-                  <div className="flex items-center text-sm text-neutral-500 mb-4 font-light tracking-wide">
-                    <span className="flex items-center font-serif italic">
-                      <Newspaper className="w-4 h-4 mr-2" />
+                <div className="py-6 w-full">
+                  <div className="text-sm text-neutral-500 mb-4 font-light tracking-wide">
+                    <span className="font-serif italic">
                       {story.source}
                     </span>
                   </div>
