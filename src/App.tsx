@@ -128,6 +128,7 @@ function computeWeekNumber(lastModifiedHeader: string | null, rows: WeeklyRow[])
 /* ===================== COMPONENT ===================== */
 function App() {
   const { t, locale, setLocale, availableLocales } = useI18n();
+  const smoothScrollTo = useSmoothScroll(300);
 
   const [route, setRoute] = useState<string>(() => getInitialRoute());
   useEffect(() => {
@@ -173,7 +174,6 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSection, setActiveSection] = useState<NewsMenuSection | null>(null);
   const storiesPerPage = 12;
-  const smoothScrollTo = useSmoothScroll(300);
 
   const formatDate = useCallback((dateString: string) => {
     const localeForDate =
@@ -371,7 +371,7 @@ function App() {
         isDevRoute={isDevRoute}
         locale={locale}
         availableLocales={availableLocales}
-        onLocaleChange={(code) => setLocale(code)}
+        onLocaleChange={(code: Locale) => setLocale(code)}
         onSectionClick={handleSectionClick}
       />
 
