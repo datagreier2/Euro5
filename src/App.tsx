@@ -20,6 +20,8 @@ import NordicPicks from './components/NordicPicks';
 import AboutPage from './pages/About';
 import DevPage from './pages/Dev';
 import { Locale, useI18n } from './i18n';
+import BetaBanner from './components/BetaBanner';
+import NewsMenu from './components/NewsMenu';
 
 
 
@@ -186,16 +188,17 @@ function App() {
 
   const errorMessage = error === '__unknown__' ? t('errors.unknownCsv') : error;
   const currentYear = useMemo(() => new Date().getFullYear(), []);
-  const localeLabel = useCallback((code: Locale) => (
-    `${code.slice(0, 1).toUpperCase()}${code.slice(1).toLowerCase()}`
-  ), []);
-  const handleSectionClick = useCallback((targetId: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+  const handleSectionClick = useCallback((targetId: string) => (event: MouseEvent<HTMLButtonElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
       return;
     }
     event.preventDefault();
     const target = document.getElementById(targetId);
-    if (!target) return;
+
+    if (!target) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     const headerOffset = 80;
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
@@ -315,9 +318,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <div className="bg-neutral-900 text-neutral-100 text-xs tracking-[0.2em] uppercase text-center py-2">
-        [BETA: B-v7.2  F-v3.0
-      </div>
+      <BetaBanner />
       <div className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
@@ -325,35 +326,14 @@ function App() {
           </h1>
         </div>
       </div>
-      <header className="bg-white border-b border-neutral-200 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-20">
-            <div className="flex-1" />
-            <nav className="flex-1 flex justify-center items-center gap-10 text-sm font-light tracking-wide text-neutral-600">
-              {!isAboutRoute && !isDevRoute && (
-                <>
-                  <a href="#the5" onClick={handleSectionClick('the5')} className="hover:text-amber-600 transition-colors uppercase">De 5</a>
-                  <a href="#debattert" onClick={handleSectionClick('debattert')} className="hover:text-amber-600 transition-colors uppercase">Debattert</a>
-                  <a href="#norden" onClick={handleSectionClick('norden')} className="hover:text-amber-600 transition-colors uppercase">Norden</a>
-                </>
-              )}
-            </nav>
-            <div className="flex-1 flex justify-end">
-              <select
-                value={locale}
-                onChange={(event) => setLocale(event.target.value as Locale)}
-                className="bg-white border border-neutral-300 text-neutral-700 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
-              >
-                {availableLocales.map(code => (
-                  <option key={code} value={code} className="bg-white">
-                    {localeLabel(code)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </header>
+      <NewsMenu
+        isAboutRoute={isAboutRoute}
+        isDevRoute={isDevRoute}
+        locale={locale}
+        availableLocales={availableLocales}
+        onLocaleChange={(code) => setLocale(code)}
+        onSectionClick={handleSectionClick}
+      />
 
       {!isAboutRoute && !isDevRoute && loading && (
         <div className="p-6 text-neutral-600">{t('common.loading')}</div>
