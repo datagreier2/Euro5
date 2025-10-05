@@ -1,7 +1,7 @@
 
 
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import type { MouseEvent } from 'react';
 import { ExternalLink, BookOpen } from 'lucide-react';
 import logoMark from '../media/svg/Euro5_E5n_Logo_2.svg';
@@ -21,7 +21,7 @@ import AboutPage from './pages/About';
 import DevPage from './pages/Dev';
 import { Locale, useI18n } from './i18n';
 import BetaBanner from './components/BetaBanner';
-import NewsMenu from './components/NewsMenu';
+import NewsMenu, { type NewsMenuSection } from './components/NewsMenu';
 
 
 
@@ -81,6 +81,7 @@ function transformRowsToStories(rows: WeeklyRow[]): NewsStory[] {
     excerpt: r.summary ?? '',
     source: r.source_name,            // <-- map source_name -> source (UI field)
     category: normalizeCategory(r.category),
+    link: r.link,
     country: r.country ?? (typeof r.country_infer === 'string' ? r.country_infer : null),
     publishedAt: parseDateISO(r.published_iso),
     imageUrl: PLACEHOLDER_IMG,
@@ -169,6 +170,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeSection, setActiveSection] = useState<NewsMenuSection | null>(null);
   const storiesPerPage = 12;
 
   const formatDate = useCallback((dateString: string) => {
@@ -188,21 +190,25 @@ function App() {
 
   const errorMessage = error === '__unknown__' ? t('errors.unknownCsv') : error;
   const currentYear = useMemo(() => new Date().getFullYear(), []);
-  const handleSectionClick = useCallback((targetId: string) => (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSectionClick = useCallback((targetId: NewsMenuSection) => (event: MouseEvent<HTMLButtonElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
       return;
     }
     event.preventDefault();
-    const target = document.getElementById(targetId);
+    setActiveSection(targetId);
 
-    if (!target) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(targetId);
 
-    const headerOffset = 80;
-    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+      if (!target) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const headerOffset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+    });
   }, []);
 
   const footer = (
@@ -316,6 +322,38 @@ function App() {
     currentPage * storiesPerPage
   );
 
+  useEffect(() => {
+    if (isAboutRoute || isDevRoute) {
+      setActiveSection(null);
+    }
+  }, [isAboutRoute, isDevRoute]);
+
+  const orderedSections = useMemo(() => {
+    const items: { key: NewsMenuSection; node: JSX.Element }[] = [];
+    if (the5Rows) {
+      items.push({ key: 'the5', node: <The5Articles articles={the5Rows} /> });
+    }
+    if (debattertStories.length) {
+      items.push({
+        key: 'debattert',
+        node: <DebattertStories stories={debattertStories} formatDate={formatDate} />,
+      });
+    }
+    if (nordicPicks) {
+      items.push({ key: 'norden', node: <NordicPicks picks={nordicPicks} /> });
+    }
+
+    if (activeSection) {
+      items.sort((a, b) => {
+        if (a.key === activeSection) return -1;
+        if (b.key === activeSection) return 1;
+        return 0;
+      });
+    }
+
+    return items;
+  }, [the5Rows, debattertStories, nordicPicks, activeSection, formatDate]);
+
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
       <BetaBanner />
@@ -353,11 +391,9 @@ function App() {
       ) : (
         !loading && !error && (
           <>
-            {the5Rows && <The5Articles articles={the5Rows} />}
-            {!!debattertStories.length && (
-              <DebattertStories stories={debattertStories} formatDate={formatDate} />
-            )}
-            {nordicPicks && <NordicPicks picks={nordicPicks} />}
+            {orderedSections.map(({ key, node }) => (
+              <Fragment key={key}>{node}</Fragment>
+            ))}
 
             <StoriesGrid
               stories={currentStories}
