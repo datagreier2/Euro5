@@ -32,6 +32,7 @@ export interface NewsStory {
   excerpt: string;
   source: string;
   category: string;
+  link: string;
   country?: string | null;
   publishedAt: string;   // normalized ISO string
   imageUrl: string;

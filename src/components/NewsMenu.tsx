@@ -1,13 +1,15 @@
 import type { MouseEvent } from 'react';
 import type { Locale } from '../i18n';
 
+export type NewsMenuSection = 'the5' | 'debattert' | 'norden';
+
 interface NewsMenuProps {
   isAboutRoute: boolean;
   isDevRoute: boolean;
   locale: Locale;
   availableLocales: Locale[];
   onLocaleChange: (locale: Locale) => void;
-  onSectionClick: (targetId: string) => (event: MouseEvent<HTMLButtonElement>) => void;
+  onSectionClick: (section: NewsMenuSection) => (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const formatLocale = (code: Locale): string => (

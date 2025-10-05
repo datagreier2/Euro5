@@ -22,6 +22,7 @@ import DevPage from './pages/Dev';
 import { Locale, useI18n } from './i18n';
 import BetaBanner from './components/BetaBanner';
 import NewsMenu, { type NewsMenuSection } from './components/NewsMenu';
+import useSmoothScroll from './hooks/useSmoothScroll';
 
 
 
@@ -142,8 +143,8 @@ function App() {
     if (path === route) return;
     window.history.pushState(null, '', path);
     setRoute(path);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [route]);
+    smoothScrollTo(0);
+  }, [route, smoothScrollTo]);
 
   const handleNav = useCallback((path: string) => (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
@@ -172,6 +173,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSection, setActiveSection] = useState<NewsMenuSection | null>(null);
   const storiesPerPage = 12;
+  const smoothScrollTo = useSmoothScroll(300);
 
   const formatDate = useCallback((dateString: string) => {
     const localeForDate =
@@ -201,15 +203,15 @@ function App() {
       const target = document.getElementById(targetId);
 
       if (!target) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        smoothScrollTo(0);
         return;
       }
 
       const headerOffset = 80;
       const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-      window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+      smoothScrollTo(top);
     });
-  }, []);
+  }, [smoothScrollTo]);
 
   const footer = (
     <footer className="bg-neutral-100 border-t border-neutral-200">

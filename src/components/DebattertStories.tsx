@@ -123,44 +123,59 @@ export default function DebattertStories({ stories, formatDate }: DebattertStori
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <div className="flex min-w-max pr-4 sm:pr-0 snap-x snap-mandatory divide-x divide-neutral-200">
-            {stories.map((story, idx) => (
-              <article
-                key={story.id}
-                ref={el => { cardsRef.current[idx] = el; }}
-                className="snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col items-center px-6 sm:px-8 first:pl-0 sm:first:pl-0"
-              >
-                <div className="relative w-full max-w-[10rem] aspect-[4/3] bg-neutral-100 flex items-center justify-center">
-                  <img
-                    src={debatedGraphic}
-                    alt={t('sections.debattert.title')}
-                    className="h-full w-full object-contain p-5 opacity-90"
-                  />
-                </div>
-                <div className="py-6 w-full">
-                  <div className="text-sm text-neutral-500 mb-4 font-light tracking-wide">
-                    <span className="font-serif italic">
-                      {story.source}
-                    </span>
+            {stories.map((story, idx) => {
+              const hasLink = Boolean(story.link);
+
+              return (
+                <article
+                  key={story.id}
+                  ref={el => { cardsRef.current[idx] = el; }}
+                  className="snap-center w-[15rem] flex-shrink-0 max-[511px]:w-72 bg-transparent transition-all duration-300 flex flex-col items-center px-6 sm:px-8 first:pl-0 sm:first:pl-0"
+                >
+                  <div className="relative w-full max-w-[10rem] aspect-[4/3] bg-neutral-100 flex items-center justify-center">
+                    <img
+                      src={debatedGraphic}
+                      alt={t('sections.debattert.title')}
+                      className="h-full w-full object-contain p-5 opacity-90"
+                    />
                   </div>
-                  <h3 className="font-serif font-semibold text-neutral-900 text-xl mb-4 leading-tight">
-                    {story.title}
-                  </h3>
-                  <p className="text-neutral-600 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
-                    {story.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-neutral-500 font-light tracking-wide">
-                    <span className="flex items-center">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {t('cards.readMinutes', { minutes: story.readTime })}
-                    </span>
-                    <span className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {formatDate(story.publishedAt)}
-                    </span>
+                  <div className="py-6 w-full">
+                    <div className="text-sm text-neutral-500 mb-4 font-light tracking-wide">
+                      <span className="font-serif italic">
+                        {story.source}
+                      </span>
+                    </div>
+                    <h3 className="font-serif font-semibold text-neutral-900 text-xl mb-4 leading-tight">
+                      {hasLink ? (
+                        <a
+                          href={story.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-inherit no-underline hover:text-amber-600 transition-colors"
+                        >
+                          {story.title}
+                        </a>
+                      ) : (
+                        story.title
+                      )}
+                    </h3>
+                    <p className="text-neutral-600 text-sm line-clamp-3 mb-6 font-light leading-relaxed">
+                      {story.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between text-xs text-neutral-500 font-light tracking-wide">
+                      <span className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2" />
+                        {t('cards.readMinutes', { minutes: story.readTime })}
+                      </span>
+                      <span className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        {formatDate(story.publishedAt)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
         </div>
         <button
