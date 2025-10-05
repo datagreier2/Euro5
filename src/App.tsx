@@ -315,6 +315,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
+      <div className="bg-neutral-900 text-neutral-100 text-xs tracking-[0.2em] uppercase text-center py-2">
+        [BETA: B-v7.2  F-v3.0
+      </div>
       <div className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
