@@ -11,7 +11,7 @@ import { the5RowSchema, type The5Row } from './validation-the5';
 import { nordicPickRowSchema, type NordicPickRow } from './validation-nordic';
 import type { WeeklyRow, NewsStory } from './types';
 
-import StoriesGrid from './components/StoriesGrid';
+import WeeklySelection from './components/WeeklySelection';
 import Pagination from './components/Pagination';
 
 import The5Articles from './components/The5Articles';
@@ -397,7 +397,7 @@ function App() {
               <Fragment key={key}>{node}</Fragment>
             ))}
 
-            <StoriesGrid
+            <WeeklySelection
               stories={currentStories}
               formatDate={formatDate}
               searchTerm={searchTerm}

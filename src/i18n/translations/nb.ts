@@ -32,7 +32,7 @@ export const nb = {
       tagline: '{{count}} debatter',
     },
     weekly: {
-      title: 'Ukentlig utvalg [BETA]',
+      title: 'Emner',
       reportsCount: '{{count}} rapporter',
     },
   },

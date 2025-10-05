@@ -4,7 +4,7 @@ import type { NewsStory } from '../types';
 import { useI18n } from '../i18n';
 
 
-type Props = {
+type WeeklySelectionProps = {
   stories: NewsStory[];
   formatDate: (iso: string) => string;
   searchTerm: string;
@@ -14,7 +14,7 @@ type Props = {
   onSelectCategory: (v: string) => void;
 };
 
-export default function StoriesGrid({
+export default function WeeklySelection({
   stories,
   formatDate,
   searchTerm,
@@ -22,7 +22,7 @@ export default function StoriesGrid({
   categories,
   selectedCategory,
   onSelectCategory,
-}: Props) {
+}: WeeklySelectionProps) {
   const { t } = useI18n();
 
   return (
