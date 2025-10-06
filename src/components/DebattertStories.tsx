@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { NewsStory } from '../types';
-import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { useI18n } from '../i18n';
 import debatedGraphic from '../../media/svg/debated.svg';
 
@@ -101,8 +101,14 @@ export default function DebattertStories({ stories, formatDate }: DebattertStori
   return (
     <section id="debattert" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div className="mb-6 px-1 sm:px-10">
-        <div>
+        <div className="flex items-center gap-3">
           <h2 className="text-3xl font-serif font-semibold text-neutral-900 mb-2 tracking-wide">{t('sections.debattert.title')}</h2>
+          <div className="relative group">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-neutral-300 text-xs font-semibold text-neutral-600">i</span>
+            <div className="absolute left-1/2 top-full z-10 mt-2 w-56 -translate-x-1/2 rounded-md border border-neutral-200 bg-white p-3 text-xs text-neutral-600 shadow-lg opacity-0 pointer-events-none transition-opacity duration-150 group-hover:opacity-100">
+              De av våre artikler og temaer som er mest kommentert på relevante plattformer
+            </div>
+          </div>
           <div className="w-16 h-px bg-amber-500" />
         </div>
       </div>

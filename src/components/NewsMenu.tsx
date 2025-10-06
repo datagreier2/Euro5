@@ -1,27 +1,16 @@
 import type { MouseEvent } from 'react';
-import type { Locale } from '../i18n';
 
 export type NewsMenuSection = 'the5' | 'debattert' | 'norden';
 
 interface NewsMenuProps {
   isAboutRoute: boolean;
   isDevRoute: boolean;
-  locale: Locale;
-  availableLocales: Locale[];
-  onLocaleChange: (locale: Locale) => void;
   onSectionClick: (section: NewsMenuSection) => (event: MouseEvent<HTMLButtonElement>) => void;
 }
-
-const formatLocale = (code: Locale): string => (
-  `${code.slice(0, 1).toUpperCase()}${code.slice(1).toLowerCase()}`
-);
 
 export default function NewsMenu({
   isAboutRoute,
   isDevRoute,
-  locale,
-  availableLocales,
-  onLocaleChange,
   onSectionClick,
 }: NewsMenuProps) {
   const showSectionLinks = !isAboutRoute && !isDevRoute;
@@ -58,19 +47,7 @@ export default function NewsMenu({
               </>
             )}
           </nav>
-          <div className="flex-1 flex justify-end">
-            <select
-              value={locale}
-              onChange={(event) => onLocaleChange(event.target.value as Locale)}
-              className="bg-white border border-neutral-300 text-neutral-700 text-sm font-light tracking-wide px-3 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500"
-            >
-              {availableLocales.map(code => (
-                <option key={code} value={code} className="bg-white">
-                  {formatLocale(code)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="flex-1 flex justify-end" />
         </div>
       </div>
     </header>

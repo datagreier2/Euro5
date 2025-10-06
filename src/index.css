@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './styles/scrollbar.css';
+@layer utilities {
+  .scrollbar-none {
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+    scrollbar-color: transparent transparent;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+    display: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+}
 
 /* TEMP: debug that CSS is loading */
 body {

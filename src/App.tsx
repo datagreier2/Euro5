@@ -19,7 +19,7 @@ import DebattertStories from './components/DebattertStories';
 import NordicPicks from './components/NordicPicks';
 import AboutPage from './pages/About';
 import DevPage from './pages/Dev';
-import { Locale, useI18n } from './i18n';
+import { useI18n } from './i18n';
 import BetaBanner from './components/BetaBanner';
 import NewsMenu, { type NewsMenuSection } from './components/NewsMenu';
 import useSmoothScroll from './hooks/useSmoothScroll';
@@ -173,7 +173,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSection, setActiveSection] = useState<NewsMenuSection | null>(null);
-  const storiesPerPage = 12;
+  const storiesPerPage = 16;
 
   const formatDate = useCallback((dateString: string) => {
     const localeForDate =
@@ -358,7 +358,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <BetaBanner />
+      <BetaBanner
+        locale={locale}
+        availableLocales={availableLocales}
+        onLocaleChange={setLocale}
+      />
       <div className="bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
@@ -369,9 +373,6 @@ function App() {
       <NewsMenu
         isAboutRoute={isAboutRoute}
         isDevRoute={isDevRoute}
-        locale={locale}
-        availableLocales={availableLocales}
-        onLocaleChange={(code: Locale) => setLocale(code)}
         onSectionClick={handleSectionClick}
       />
 
@@ -400,8 +401,6 @@ function App() {
             <WeeklySelection
               stories={currentStories}
               formatDate={formatDate}
-              searchTerm={searchTerm}
-              onSearch={(v) => { setSearchTerm(v); setCurrentPage(1); }}
               categories={categories}
               selectedCategory={selectedCategory}
               onSelectCategory={(v) => { setSelectedCategory(v); setCurrentPage(1); }}

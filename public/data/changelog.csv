@@ -1,30 +1,54 @@
-Latest commits,Known issues
-Improved categorisation using GPT 5 mini,Some of the sources fail to fetch
-Normalised sources to avoid bias toward rich streams,Categorisation not very precise
-Improved 'most debated' by crawling Reddit,German and Italian contents is somehow slipping in to main stream
-Improved source streams by adding sitemap fetching to fetch strategy,Sporadical bad rendering of special characters
-Added 'enrichment phase' to populate titles and summaries better,HTML is bad
-Expanded sources to 110 incuding more countries,Non-Scandi vs Scandi sources not weigthed properly. Bias toward UK in both.
-Normalised bias between eastern/western Europe,"""The week in 5"" logic still not working"
-Fixed item matchng between main stream and Reddit,"Push to Git still manual, must be automated"
-Cleaned summaries that included markup language and links,Costs racked up to a whopping 12kr/week. Need financial support.
-Replaced all LLM logic except in careogirasation step because it was better,No Swedish and Danish version.
-Connected to domain euro5.news,SEO in non-existant
-Improved speed and cost replacing GPT5 mini with GPT5 nano (identical results),No indication of latest update
-Added logic to avoid fetching English content from scandi sources,"Trasparency of sources: Sources considered by model exported in back end, need sources used"
-About and changelog pages created,Source diversity still too low. Needs priority in first sorting step
-"Improved sources for Sweden, Poland, Finland, France, Germany, Denmark, Baltics, Belgium / Brussels, Spain, Netherlands. Verifified core / general.",Quality measurement includes diversification bias. Diversification should be run in it's own logic step for clarity.
-Quality measurement now includes lexical logic to ensure topic diversity.,Quality measurement by topic score needs improvement
-"Quality measurement now includes diversification score for topic, region",Quality measurement should score better by nation/region
-Deduplication faster,Validate quality of new deduplication logic
-"Avoid Trump in ""the 5"" at all costs",Debate article matching simplified but may be simplified too much. Validate several outputs to ensure quality.
-"Create logic for picking ""the 5""","Implement ""the 5"" front end"
-Improved backend stability,"Fetch svg logos for ""the 5"" from sources at runtime."
-Improved selection bias scoring,Changelog not displaying card text properly
-"Refactored to slower but better source, country, category diversity logic.",Frontend doesn't have a proper stack
-Increased penalty for category repetition - better diversity of categories,Improve UI
-Major front end update,Automate posts for SoMe
-Added multi language support,Quality measurement step has 'random' rule. Improve quality scoring to avoid random deletions.
-,Reddit article match not very reliable
-,Subreddits need review
-,"Huge negative bias for Trump articles. This is to avoid domination due to quantity of Trump stories in fetching, but must be adressed in the future."
+﻿id,Name,Public title,Status,Public details,Realm,Notes public
+5,Categorisation improvement,Categorisation improvement,To Do,Categorisation improvement,Backend,
+6,Normalised sources,Normalised sources,DONE!,Normalised sources to avoid bias toward rich streams,Backend,
+7,Improved 'most debated',Improved 'most debated',DONE!,Improved 'most debated' by crawling Reddit,Backend,
+8,Improved source streams,Improved source streams,DONE!,Improved source streams by adding sitemap fetching to fetch strategy,Backend,
+9,Enrichment imropvement,Enrichment imropvement,DONE!,Added 'enrichment phase' to populate titles and summaries better,Backend,
+10,Expanded sources,Expanded sources,"To Do,DONE!",Expanded sources to 110 including more countries,Backend,
+11,Normalised bias,Normalised bias,DONE!,Normalised bias between eastern/western Europe,Backend,
+12,Fixed item matching,Fixed item matching,DONE!,Fixed item matching between mainstream and Reddit Hot,Backend,
+13,Summaries contain meta,Summaries contain meta,DONE!,Clean meta from plain text for output,Backend,
+14,Remote LLM reduces independence,Remote LLM reduces independence,DONE!,Rely on local processes to improve stability and maintain independence. (And not feed Evil Corp with data),Backend,Minimised use of remote LLM and LLM in general. Yielded better results as well.
+15,Connect to domain euro5.news,Connect to domain euro5.news (beta URL),DONE!,"Set up DNS, CNAME and whatever to load site from https://euro5.news/",Frontend,Used Github pages. Very nice.
+16,Reduce remote LLM $$$.,Reduce remote LLM $$$.,DONE!,Improve speed and cost by replacing remote LLM with more light weight version.,Backend,Yielded identical result. Nice.
+17,Avoid fetching ENG from scandi sources,Avoid fetching ENG from scandi sources,DONE!,Add logic to avoid fetching English content from scandi sources,Backend,
+18,About and changelog pages,About and changelog pages,DONE!,Add about and changelog subpages.,Frontend,For current public version only. Must be added to v2 as well.
+19,Improve sources,Improve sources,DONE!,"Improved sources for Sweden, Poland, Finland, France, Germany, Denmark, Baltics, Belgium / Brussels, Spain, Netherlands. Verified core / general.",Backend,All sources need periodical refining. Consider outsourcing to AI agent/human.
+20,Ensure topic diversity,Ensure topic diversity,DONE!,Quality measurement should include logic to ensure topic diversity.,Backend,Added lexical logic to match and score topic similarity.
+21,Regional diversity not very good,Regional diversity not very good,DONE!,Quality measurement should also include diversity per region. Add to diversity scoring.,Backend,Read sources Yaml and normalised scores.
+22,Faster deduplication,Faster deduplication,DONE!,Deduplication very slow. Refactor.,Backend,Simple refactoring to dedup hierarchically and skip heavier dedup if sucessful.
+23,Trump domination in The 5 picks,Trump domination in The 5 picks,DONE!,">1 Trump in ""the 5"" at all costs. (Temporary diversity fix).",Backend,Needs revisit. Too crude. Removes too many items with Trump mentioned. Should only negative bias Trump items when Trump is main theme.
+24,Add step to pick The 5,Add step to pick The 5,DONE!,"Create logic for picking ""the 5""",Backend,Created simple diversity pick for The 5
+25,Deps failing,Deps failing,DONE!,"Improve backend stability by refactoring to runtime-safe deps, ++",Backend,Runtime-safe deps adde instead of Google language dep with wheel. Stabilised runtime AND yielded better results. Nice.
+26,Selection scoring unbalanced,Selection scoring unbalanced,DONE!,Improve selection bias scoring,Backend,Can't remember what I did. But it worked to satisfaction.
+27,Diversity logic fast but bad,Diversity logic fast but bad,DONE!,"Refactored to slower but better source, country, category diversity logic.",Backend,
+28,Category repetition leaking through to curation,Category repetition leaking through to curation,DONE!,Find a way to reduce category repetition in input items.,Backend,Increased penalty for category repetition.
+29,Major front end update in DEV (V2),Major front end update in DEV (V2),DONE!,Complete new front end with proper components and data handling.,Frontend,Good practice set up with VITE etc.
+30,No multi language support,No multi language support,DONE!,Add multi language support,Frontend,Found a good practice way to handle multi language support: i18n
+31,Encoding bakes bad strings into plain text,Encoding bakes bad strings into plain text,DONE!,Find upstream source of baking non-UTF8 bad plain text into properly encoded output.,Backend,Painstakingly worked upstream to find culprit cell. Eventually found and fixed. Built simple encoding and baking detection cell.
+32,Enrichment has too many items to parse,Enrichment has too many items to parse,DONE!,Reduce input items for enrichment to process.,Backend,Added simple dedup step before enrichment phase.
+33,Skip V2 frontend,Skip V2 frontend,Doing,V3 front end so far along (and beutiful-er) we skip V2.,Frontend,
+34,Security issue detected in prompt handling,Security issue in [redacted],DONE!,Hardened handling of [redacted],Backend,Made a change to harden security.
+35,Backend refactoring pass,Backend refactoring pass,DONE!,Run a pass in full run refactoring cells to de-spaghettify.,Backend,Some code refactored. Not sigificant performance improvements. Mostly tidying up.
+36,Better API handlig,Better API handlig,DONE!,Can't remember what I did but it was probably very smart and successful.,Backend,
+37,GDPR handling,GDPR handling,DONE!,GDPR handling scattered in different steps. Must be handled and documented better. Mostly because of Reddit fetching (posts may contain PID and we have no control over it.),Backend,"Moved cleanup to one single step to automatically run it at end of  every run, keeping only cleaned data output with no data kept (only topic/URL matching score.)"
+38,Ensure fallback doesn't break GDPR improvement,Ensure fallback doesn't break GDPR improvement,DONE!,Force fallback to temp data removal to make sure no step falls back to KEEP instead of SWEEP.,Backend,"All cells now throw ERROR when can't input, instead of calling tmp."
+39,Test backend 7.2,Test backend 7.2,DONE!,Backend 7.2 runs successfully after fixing two table TTL issues.,Backend,Now considered stable.
+40,Some of the sources fail to fetch,Some of the sources fail to fetch,Iterational,Some of the sources fail to fetch,Backend,Maintainance task.
+41,Unwanted languages slipping through from sources,Unwanted languages slipping through from sources,DONE!,"For unknown reason, Italian ang German fetching identifies as EN.",Backend,Added cleanup process to detect and remove unwanted languages.
+42,UK somehow identified as SCANDI,UK somehow identified as SCANDI,DONE!,Unknown reason: SCANDI successfully identified in .raw but UK still slips in to SCANDI in curation.,Backend,"Removed SCANDI identification upstream, classify SCANDI downstream after 'country' classification instead."
+43,Replaced picker for The 5,Replaced picker for The 5,DONE!,Better quality of pick. Was interpreting filters badly.,Backend,
+44,Set up push to Git,Set up push to Git,To Do,"Push to Git still manual, must be automated",Backend,
+45,Reduce cost of remote LLM usage,Reduce cost of remote LLM usage,DONE!,Costs racked up to a whopping 12kr/week. Fix.,Backend,"Reduced calls and skipped mid step medium model, falls back to heavy model (rarely) instead."
+46,No Swedish and Danish version.,No Swedish and Danish version.,To Do,Translate and deploy.,Frontend,
+47,SEO in non-existant,SEO is (basically) non-existant,Iterational,Improve SEO to acceptable level.,Frontend,Improve SEO to acceptable level.
+48,No indication of latest update on front page,No indication of latest update on front page,To Do,Add field that displays version.,Frontend,Add field that displays version.
+49,Transparency of sources,Transparency of sources,To Do,Sources should display somewhere on page. Already listed in back end.,Frontend,
+50,"SoMe/forum fetching ""illegal""","SoMe/forum fetching ""illegal""",DONE!,Fetching breaks ToS. Not great.,Backend,"Read ToS and added ceiling, 'wait' and API feedback."
+51,Items lost due to missing summary.,Items lost due to missing summary.,Iterational,Improve sources fetch details and enrichment of sources.,Backend,Ongoing.
+52,V3 spaghetti,V3 spaghetti,To Do,"Frontend V3 slightly spaghetti, needs refactoring",Frontend,"Stable/tidy enough, but must be addressed soon."
+53,Very slow curation.,Very slow curation.,To Do,"Consider two-step processing, per category (maybe in parallell processing).",Backend,Curation massively slow (~1-2s/item) due to re-reading list progressively. Performance be worth it but two-step or per-category process should be tested. Parallel processing seems fit for this task.
+54,CPU used for all processes.,CPU used for all processes.,DONE!,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)",Backend,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)"
+55,Bot wall handling not very polite,Bot wall handling not very polite,DONE!,"Implement graceful handling of Captcha, Cloudflare etc. to back off politely instead of retrying. (But not giving up completely)",Backend,Look for best practice or invent something.
+56,Fix shorter headlines for The 5,Fix shorter headlines for The 5,DONE!,Headlines for The 5 cut off instead of fetching short headline.,Backend,
+57,Needs copy and translation,Needs copy and translation,Waiting,Static text needs rewriting and translating.,Frontend,
