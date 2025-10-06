@@ -215,47 +215,8 @@ function App() {
 
   const footer = (
     <footer className="bg-neutral-100 border-t border-neutral-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center mb-6">
-              <img src={logoMark} alt="Euro5" className="w-10 h-10 mr-3" />
-              <div>
-                <h3 className="text-2xl font-serif font-semibold text-neutral-900 tracking-wide">{t('footer.brandTitle')}</h3>
-                <p className="text-xs text-neutral-500 font-light tracking-widest uppercase">{t('footer.brandSubtitle')}</p>
-              </div>
-            </div>
-            <p className="text-neutral-600 mb-6 font-light leading-relaxed">
-              {t('footer.description')}
-            </p>
-            <div className="flex space-x-6">
-              <ExternalLink className="w-5 h-5 text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer" />
-              <BookOpen className="w-5 h-5 text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer" />
-            </div>
-          </div>
-          <div>
-            <h4 className="font-serif text-neutral-800 mb-6 tracking-wide">{t('footer.navigationTitle')}</h4>
-            <ul className="space-y-3 text-neutral-600 font-light">
-              <li><a href="/" onClick={handleNav('/')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.thisWeek')}</a></li>
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.archives')}</a></li>
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.sources')}</a></li>
-              <li><a href="/dev" onClick={handleNav('/dev')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.dev')}</a></li>
-              <li><a href="/about" onClick={handleNav('/about')} className="hover:text-amber-600 transition-colors tracking-wide">{t('navigation.about')}</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-serif text-neutral-800 mb-6 tracking-wide">{t('footer.briefingsTitle')}</h4>
-            <ul className="space-y-3 text-neutral-600 font-light">
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.technology')}</a></li>
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.business')}</a></li>
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.science')}</a></li>
-              <li><a href="#" className="hover:text-amber-600 transition-colors tracking-wide">{t('footer.briefings.health')}</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-neutral-200 mt-12 pt-8 text-center text-neutral-500">
-          <p className="font-light tracking-wide">{t('footer.copyright', { year: currentYear })}</p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-neutral-500">
+        <p className="text-xs tracking-wide">© {currentYear} Aron Lindegård</p>
       </div>
     </footer>
   );
@@ -356,25 +317,34 @@ function App() {
     return items;
   }, [the5Rows, debattertStories, nordicPicks, activeSection, formatDate]);
 
+  const rootClasses = isDevRoute
+    ? 'min-h-screen bg-neutral-950 text-neutral-100'
+    : 'min-h-screen bg-neutral-50 text-neutral-900';
+
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
+    <div className={rootClasses}>
       <BetaBanner
         locale={locale}
         availableLocales={availableLocales}
         onLocaleChange={setLocale}
+        showLocalePicker={!isDevRoute}
       />
-      <div className="bg-white border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
-            EURO5
-          </h1>
+      {!isDevRoute && (
+        <div className="bg-white border-b border-neutral-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h1 className="text-[48px] sm:text-[64px] lg:text-[80px] font-serif font-semibold text-center text-neutral-900 leading-none tracking-tight">
+              EURO5
+            </h1>
+          </div>
         </div>
-      </div>
-      <NewsMenu
-        isAboutRoute={isAboutRoute}
-        isDevRoute={isDevRoute}
-        onSectionClick={handleSectionClick}
-      />
+      )}
+      {!isDevRoute && (
+        <NewsMenu
+          isAboutRoute={isAboutRoute}
+          isDevRoute={isDevRoute}
+          onSectionClick={handleSectionClick}
+        />
+      )}
 
       {!isAboutRoute && !isDevRoute && loading && (
         <div className="p-6 text-neutral-600">{t('common.loading')}</div>
@@ -417,7 +387,7 @@ function App() {
         )
       )}
 
-      {footer}
+      {!isDevRoute && footer}
     </div>
   );
 }

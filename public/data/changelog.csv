@@ -27,7 +27,7 @@
 30,No multi language support,No multi language support,DONE!,Add multi language support,Frontend,Found a good practice way to handle multi language support: i18n
 31,Encoding bakes bad strings into plain text,Encoding bakes bad strings into plain text,DONE!,Find upstream source of baking non-UTF8 bad plain text into properly encoded output.,Backend,Painstakingly worked upstream to find culprit cell. Eventually found and fixed. Built simple encoding and baking detection cell.
 32,Enrichment has too many items to parse,Enrichment has too many items to parse,DONE!,Reduce input items for enrichment to process.,Backend,Added simple dedup step before enrichment phase.
-33,Skip V2 frontend,Skip V2 frontend,Doing,V3 front end so far along (and beutiful-er) we skip V2.,Frontend,
+33,Skip V2 frontend,Skip V2 frontend,DONE!,V3 front end so far along (and beutiful-er) we skip V2.,Frontend,
 34,Security issue detected in prompt handling,Security issue in [redacted],DONE!,Hardened handling of [redacted],Backend,Made a change to harden security.
 35,Backend refactoring pass,Backend refactoring pass,DONE!,Run a pass in full run refactoring cells to de-spaghettify.,Backend,Some code refactored. Not sigificant performance improvements. Mostly tidying up.
 36,Better API handlig,Better API handlig,DONE!,Can't remember what I did but it was probably very smart and successful.,Backend,
@@ -48,7 +48,7 @@
 51,Items lost due to missing summary.,Items lost due to missing summary.,Iterational,Improve sources fetch details and enrichment of sources.,Backend,Ongoing.
 52,V3 spaghetti,V3 spaghetti,To Do,"Frontend V3 slightly spaghetti, needs refactoring",Frontend,"Stable/tidy enough, but must be addressed soon."
 53,Very slow curation.,Very slow curation.,To Do,"Consider two-step processing, per category (maybe in parallell processing).",Backend,Curation massively slow (~1-2s/item) due to re-reading list progressively. Performance be worth it but two-step or per-category process should be tested. Parallel processing seems fit for this task.
-54,CPU used for all processes.,CPU used for all processes.,DONE!,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)",Backend,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)"
-55,Bot wall handling not very polite,Bot wall handling not very polite,DONE!,"Implement graceful handling of Captcha, Cloudflare etc. to back off politely instead of retrying. (But not giving up completely)",Backend,Look for best practice or invent something.
+54,CPU used for all processes.,CPU used for all processes.,To Do,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)",Backend,"Most processes CPU/linear. GPU/Parallel should be implemented where possible. (Except fetch step, to avoid appearing as DDoS by detectors.)"
+55,Bot wall handling not very polite,Bot wall handling not very polite,Researching,"Implement graceful handling of Captcha, Cloudflare etc. to back off politely instead of retrying. (But not giving up completely)",Backend,Look for best practice or invent something.
 56,Fix shorter headlines for The 5,Fix shorter headlines for The 5,DONE!,Headlines for The 5 cut off instead of fetching short headline.,Backend,
 57,Needs copy and translation,Needs copy and translation,Waiting,Static text needs rewriting and translating.,Frontend,
